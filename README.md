@@ -10,14 +10,10 @@ First install the `cairo` and `jupyterlab` packages using conda:
 conda install -c conda-forge cairo jupyterlab
 ```
 
-Then you can install mmot using either 
-```bash 
-pip install mmot
-```
-or with a local copy of the source
+Then you can install mmot by cloning this repository and install the package with pip:
 ```bash
-cd mmot
-pip install -e .
+git clone git@github.com:simda-muri/mmot.git
+pip install -e mmot
 ```
 
 ## Example Usage
