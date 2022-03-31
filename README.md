@@ -5,12 +5,16 @@ Code to accompany paper
 > B. Zhou and M. Parno (2022) "Efficient and Exact Multimarginal Optimal Transport with Pairwise Costs"
 
 ## Installation 
+First install the `cairo` package using conda:
+```bash 
+conda install -c conda-forge cairo
+```
 
+Then you can install mmot using either 
 ```bash 
 pip install mmot
 ```
-
-Or with a local copy of the source:
+or with a local copy of the source
 ```bash
 cd mmot
 pip install -e .
