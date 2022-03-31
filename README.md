@@ -6,5 +6,15 @@ Code to accompany paper
 
 ## Installation 
 
+```bash 
+pip install mmot
+```
+
+Or with a local copy of the source:
+```bash
+cd mmot
+pip install -e .
+```
+
 ## Example Usage
 
