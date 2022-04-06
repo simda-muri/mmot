@@ -18,6 +18,9 @@ class MMOTSolver:
 
     self._measures = measures 
     num_marginals = len(measures)
+    
+    self.f_tmp = None 
+    self.save_root_node = -1
 
     self._x = x 
     self._y = y
@@ -195,82 +198,68 @@ class MMOTSolver:
 
   def Step(self, root_node, dual_vars, step_size):
 
-    tree, layers = self.CreateDirected(root_node)
-    num_verts = tree.vcount()
+    if(root_node != self.save_root_node):
+      self.save_root_node = root_node 
+      self.tree, self.layers = self.CreateDirected(root_node)
+      self.f_tmp = None 
 
-    error = 0.0
+    num_verts = self.tree.vcount()
 
-    # Will hold the c transform of the net flux for each vertex
-    f_tmp = [None]*num_verts
-
-    # Will hold f_i = ( \sum_j f_j^{(k+1)} )^c for j\neq i , where i is the root_node
-    #fsum = np.zeros(dual_vars[0].shape)
-          
-    # Do the final c-transform to update the root note
-    for layer in layers[:-1]:
-      for vert_ind in layer:
-
-        if(tree.degree(vert_ind, mode="in")==0):
-          f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
-          
-        else:
-          # Compute the net flux (f_i - \sum_j f_tmp[j]) at this vertex
-          f_net = np.copy(dual_vars[vert_ind])
-          for edge in tree.vs[vert_ind].in_edges():
-            assert(f_tmp[edge.source] is not None)
-            f_net -= f_tmp[edge.source]
-
-          f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
+    error = 0.0    
 
 
-    # Gradient updates for all but root node
-    for layer in layers[:-1]:
-      for vert_ind in layer:
-        
-        #print('Trying to update ', vert_ind)
+    # Check to see if we've already taken a step with this root node and can reuse the net fluxes
+    if(self.f_tmp is None):
 
-        # # Check to see if this is a leaf node 
-        # if(tree.degree(vert_ind, mode="in")==0):
-        #   #print('Found a leaf: ', vert_ind)
-        #   f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
-        
-        # # Not a leaf or the root_node... 
-        # else:
-        
-        #   # Compute the net flux (f_i - \sum_j f_tmp[j]) at this vertex
-        #   f_net = np.copy(dual_vars[vert_ind])
-        #   for edge in tree.vs[vert_ind].in_edges():
-        #     assert(f_tmp[edge.source] is not None)
-        #     f_net -= f_tmp[edge.source]
+      self.f_tmp = [None]*num_verts
+
+      # Do the final c-transform to update the root note
+      for layer in self.layers[:-1]:
+        for vert_ind in layer:
+
+          if(self.tree.degree(vert_ind, mode="in")==0):
+            self.f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
+            
+          else:
+            # Compute the net flux (f_i - \sum_j f_tmp[j]) at this vertex
+            f_net = np.copy(dual_vars[vert_ind])
+            for edge in self.tree.vs[vert_ind].in_edges():
+              assert(self.f_tmp[edge.source] is not None)
+              f_net -= self.f_tmp[edge.source]
+
+            self.f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
+
+
     
-        #   # Set f_tmp[i] = (f_i - \sum_j f_tmp[j])^c
-        #   f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
+    # Gradient updates for all but root node
+    for layer in self.layers[:-1]:
+      for vert_ind in layer:
 
         # Update the dual variable at this node 
-        out_edge = tree.vs[vert_ind].out_edges()[0]
-        smu = push_forward(self._bf, f_tmp[vert_ind], self._measures[self._measure_map[out_edge.target]], self._x, self._y)
+        out_edge = self.tree.vs[vert_ind].out_edges()[0]
+        smu = push_forward(self._bf, self.f_tmp[vert_ind], self._measures[self._measure_map[out_edge.target]], self._x, self._y)
         error += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
        
     # Do the final c-transform to update the root note
-    for layer in layers[:-1]:
+    for layer in self.layers[:-1]:
       for vert_ind in layer:
 
-        if(tree.degree(vert_ind, mode="in")==0):
-          f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
+        if(self.tree.degree(vert_ind, mode="in")==0):
+          self.f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
           
         else:
           # Compute the net flux (f_i - \sum_j f_tmp[j]) at this vertex
           f_net = np.copy(dual_vars[vert_ind])
-          for edge in tree.vs[vert_ind].in_edges():
-            assert(f_tmp[edge.source] is not None)
-            f_net -= f_tmp[edge.source]
+          for edge in self.tree.vs[vert_ind].in_edges():
+            assert(self.f_tmp[edge.source] is not None)
+            f_net -= self.f_tmp[edge.source]
 
-          f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
+          self.f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
       
     fsum = np.zeros(dual_vars[0].shape)
-    for edge in tree.vs[layers[-1][0]].in_edges():
-      fsum += f_tmp[edge.source]
+    for edge in self.tree.vs[self.layers[-1][0]].in_edges():
+      fsum += self.f_tmp[edge.source]
 
-    dual_vars[layers[-1][0]] = fsum
+    dual_vars[self.layers[-1][0]] = fsum
 
     return error
