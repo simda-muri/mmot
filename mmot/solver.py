@@ -70,6 +70,32 @@ class MMOTSolver:
 
       return graph, vertmap
 
+  def Barycenter(self, unrolled_dual_vars, weights):
+    """ Returns the barycenter of the original measures given dual variables on the unrolled tree.  The dual variables are the same 
+        as those that would be passed to the ComputeCost or Step functions.
+        
+        ARGUMENTS:
+          unrolled_dual_vars (list of np.array) : List of vectors containing the dual variables for each node in the unrolled graph.
+          weights (np.array) : Vector containing weights on each measure in the original problem.  Must sum to one.
+
+        RETURNS:
+          np.array : A 2d numpy array containing the barycenter.
+    """
+
+    assert len(weights) == len(self._measures)
+    assert np.abs(np.sum(weights)-1.0)<1e-14
+
+    # First, combine the unrolled dual variables to estimate the dual variables in the original problem
+    measure_shape = self._measures[0].shape 
+    dual_vars = [np.zeros(measure_shape) for i in range(len(self._measures))]
+    for i,f in enumerate(unrolled_dual_vars):
+      dual_vars[self._measure_map[i]] += f 
+
+    bary = np.zeros(measure_shape) 
+    for i,f in enumerate(dual_vars):
+      bary += push_forward(self._bf, weights[i]*f, self._measures[i], self._x, self._y)
+    return bary 
+
   def NumDual(self):
     """ Returns the number of vector-valued dual variables, which is equivalent 
         to the number of vertices in the unrolled tree.
@@ -170,7 +196,7 @@ class MMOTSolver:
       files_to_create.append(kwargs['filename'])
 
     for file in files_to_create:
-      layout = tree.layout(layout='reingold_tilford')
+      layout = tree.layout(layout='reingold_tilford') # <- TODO: Make this an option
       ig.plot(tree, layout=layout, bbox=(400, 400), edge_width=4, margin=50,
               vertex_color=[list(scalarMap.to_rgba(node_to_layer[i])[0:3]) for i in range(num_verts)],
               vertex_label=vert_labels,

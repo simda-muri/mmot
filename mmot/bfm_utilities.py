@@ -29,7 +29,7 @@ def leg_transform(bf, phi):
 def convex_conversion(g,x,y):
   """ 
   Given the dual variable g(x) evaluated at the points x, this function returns 
-  the ϕ(x) = ½|x|² − g(x)
+  the ϕ(x) = ½|x|² - g(x)
   """
   return 0.5*(x*x+y*y) - g
   
