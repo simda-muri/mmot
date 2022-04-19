@@ -160,9 +160,6 @@ class MMOTSolver:
     for i,f in enumerate(unrolled_dual_vars):
       dual_vars[self._measure_map[i]] += f 
     
-    plt.contour(convex_conversion(weights[0]*dual_vars[0], self._x, self._y))
-    plt.figure()
-
     bary = np.zeros(measure_shape) 
     for i,f in enumerate(dual_vars):
       bary += push_forward(self._bf, weights[i]*f, self._measures[i], self._x, self._y)
@@ -303,8 +300,8 @@ class MMOTSolver:
     # Parameters for Armijo-Goldstein
     scaleDown = 0.5
     scaleUp   = 1/scaleDown
-    upper = 0.9
-    lower = 0.1
+    upper = 1.0-1e-4
+    lower = 1e-4
     
     # Armijo-Goldstein
     diff = value - oldValue
