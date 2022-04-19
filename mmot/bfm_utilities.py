@@ -2,6 +2,7 @@ import numpy as np
 from scipy.fftpack import dctn, idctn
 from w2 import BFM
 
+import matplotlib.pyplot as plt 
 
 # Initialize Fourier kernel
 def initialize_kernel(n1, n2):

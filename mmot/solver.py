@@ -11,6 +11,75 @@ import IPython.display as idisp
 from .graph_utilities import * 
 from .bfm_utilities import *
 
+def interpolate_function(func, xs, ys):
+  """ Bilinear interpolation of a function defined at cell centers.
+
+  Mimics the BFM "interpolate_function" function, which assumes the values of "func" live at the center of 
+  each pixel and uses bilinear interpolation to interpolate between points.  The values around the edge are 
+  duplicated at "ghost" points to estimate the function in the half-pixel boundary around the edge.  The gradient 
+  in this boundary region is therefore zero.
+
+  See for example, https://github.com/Math-Jacobs/bfm/blob/c93de454c49c6958e0a8e18b285c2e005b55507f/python/src/main.cpp#L263
+
+  ARGUMENTS:
+    func (np.array) :  Nx by Ny matrix of function values at the cell centers 
+    xs (np.array) : A length M vector containing the x component of the points where the function is to be evaluated
+    ys (np.array) : A length M vector containing the y component of the points where the function is to be evaluated
+
+  RETURNS:
+    np.array : The values of the function at the points (xs[i],ys[i])
+
+  """
+  n1, n2 = func.shape 
+
+  xindex = np.round(np.maximum(np.minimum(xs*n1 - 0.5, n1-1),0)).astype(np.int)
+  yindex = np.round(np.maximum(np.minimum(ys*n2 - 0.5, n2-1),0)).astype(np.int)
+
+  xfrac = xs*n1 - 0.5 - xindex 
+  yfrac = ys*n2 - 0.5 - yindex 
+
+  xother = np.round(np.maximum(np.minimum(xindex + np.sign(xfrac), n1-1), 0)).astype(np.int)
+  yother = np.round(np.maximum(np.minimum(yindex + np.sign(yfrac), n2-1), 0)).astype(np.int)
+
+  v1 = (1.0-np.abs(xfrac))*(1.0-np.abs(yfrac))*func[xindex,yindex]
+  v2 = np.abs(xfrac)*(1-np.abs(yfrac))*func[xother,yindex]
+  v3 = (1.0-np.abs(xfrac))*np.abs(yfrac)*func[xindex,yother]
+  v4 = np.abs(xfrac)*np.abs(yfrac)*func[xother,yother]
+        
+  return v1+v2+v3+v4
+
+
+
+def evaluate_gradient(func, xs, ys):
+  """ Computes an approximation of the gradient of a 2d scalar function defined at cell centers.
+
+  Evaluates the gradient of a scalar function defined on an n1xn2 regular grid.  Assumes the values of 
+  the function are at the cell centers.
+
+  ARGUMENTS:
+    func (np.array) : Nx by Ny matrix of function values at the cell centers 
+    xs (np.array) : A length M vector containing the x component of the points where the function's gradient should be evaluated
+    ys (np.array) : A length M vector containing the y component of the points where the function's gradient should be evaluated
+
+  RETURNS:
+    np.array : A length M vector containing the x derivative of the function at the points (xs[i],ys[i])
+    np.array : A length M vector containing the y derivative of the function at the points (xs[i],ys[i])
+
+  """
+  assert len(xs)==len(ys)
+  assert(len(xs.shape)==1)
+  assert(len(ys.shape)==1)
+  
+  n1, n2 = func.shape
+  dx = 0.5/n1
+  dy = 0.5/n2
+
+  derivx = (interpolate_function(func, xs+dx, ys) - interpolate_function(func, xs-dx, ys))/(2.0*dx)
+  derivy = (interpolate_function(func, xs, ys+dy) - interpolate_function(func, xs, ys-dy))/(2.0*dy)
+
+  return derivx, derivy 
+
+
 
 class MMOTSolver:
 
@@ -90,10 +159,18 @@ class MMOTSolver:
     dual_vars = [np.zeros(measure_shape) for i in range(len(self._measures))]
     for i,f in enumerate(unrolled_dual_vars):
       dual_vars[self._measure_map[i]] += f 
+    
+    plt.contour(convex_conversion(weights[0]*dual_vars[0], self._x, self._y))
+    plt.figure()
 
     bary = np.zeros(measure_shape) 
     for i,f in enumerate(dual_vars):
       bary += push_forward(self._bf, weights[i]*f, self._measures[i], self._x, self._y)
+    
+    bary *= np.prod(measure_shape)/np.sum(bary)
+
+    #bary = push_forward(self._bf, weights[0]*dual_vars[0], self._measures[0], self._x, self._y)
+      
     return bary 
 
   def NumDual(self):
@@ -221,7 +298,23 @@ class MMOTSolver:
           cost += np.sum(dual_vars[dual_ind]*self._measures[meas_ind])/(n1*n2)
         return cost
 
+  def StepSizeUpdate(self, sigma, value, oldValue, gradSq):
+  
+    # Parameters for Armijo-Goldstein
+    scaleDown = 0.5
+    scaleUp   = 1/scaleDown
+    upper = 0.9
+    lower = 0.1
+    
+    # Armijo-Goldstein
+    diff = value - oldValue
 
+    if diff > gradSq * sigma * upper:
+        return sigma * scaleUp
+    elif diff < gradSq * sigma * lower:
+        return sigma * scaleDown
+    return sigma
+    
   def Step(self, root_node, dual_vars, step_size):
 
     if(root_node != self.save_root_node):
