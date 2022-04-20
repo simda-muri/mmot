@@ -467,7 +467,7 @@ div.rendered_html tbody tr:hover {
 <section id="Barycenter-of-MNIST-Digits">
 <h1>Barycenter of MNIST Digits<a class="headerlink" href="#Barycenter-of-MNIST-Digits" title="Permalink to this headline">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">from</span> <span class="nn">mmot</span> <span class="kn">import</span> <span class="n">MMOTSolver</span>
@@ -551,7 +551,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">unroll_node</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="n">num_digits</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">num_digits</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># Number of measures to include in barycenter calculation</span>
 <span class="n">sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">digits</span><span class="p">[</span><span class="n">i</span><span class="p">,:,:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inds</span><span class="p">])</span>
 
 <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">digits</span><span class="p">[</span><span class="n">inds</span><span class="p">[</span><span class="mi">0</span><span class="p">],:,:])</span>
@@ -573,8 +573,9 @@ div.rendered_html tbody tr:hover {
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">num_digits</span><span class="p">):</span>
         <span class="n">edge_list</span> <span class="o">+=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]]</span>
 
+<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">)</span>
 
-<span class="n">prob</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">)</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -596,7 +597,7 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dual_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())]</span>
 
 <span class="n">num_its</span> <span class="o">=</span> <span class="mi">10000</span>
-<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">ftol</span> <span class="o">=</span> <span class="mf">1e-9</span>
 <span class="n">gtol</span> <span class="o">=</span> <span class="mf">1e-3</span>
 
@@ -636,48 +637,24 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Iteration, StepSize,    Cost,   Error
-        0,   0.2000,  0.0184,   0.64792
-       10,   0.1327,  0.1448,   0.10641
-       20,   0.0794,  0.1578,   0.05765
-       30,   0.0476,  0.1637,   0.04896
-       40,   0.0285,  0.1711,   0.05001
-       50,   0.0350,  0.1829,   0.04006
-       60,   0.0209,  0.1861,   0.03688
-       70,   0.0154,  0.1902,   0.03523
-       80,   0.0125,  0.1935,   0.03595
-       90,   0.0102,  0.1962,   0.03717
-      100,   0.0075,  0.1973,   0.03561
-      110,   0.0055,  0.1984,   0.03445
-      120,   0.0045,  0.1995,   0.03423
-      130,   0.0033,  0.2003,   0.03498
-      140,   0.0030,  0.2009,   0.03484
-      150,   0.0018,  0.2011,   0.03470
-      160,   0.0013,  0.2014,   0.03481
-      170,   0.0011,  0.2017,   0.03435
-      180,   0.0010,  0.2019,   0.03471
-      190,   0.0007,  0.2019,   0.03438
-      200,   0.0004,  0.2020,   0.03507
-      210,   0.0004,  0.2021,   0.03431
-      220,   0.0003,  0.2022,   0.03416
-      230,   0.0003,  0.2022,   0.03397
-      240,   0.0002,  0.2022,   0.03516
-      250,   0.0001,  0.2023,   0.03512
-      260,   0.0001,  0.2023,   0.03472
-      270,   0.0001,  0.2023,   0.03407
-      280,   0.0001,  0.2023,   0.03424
-      290,   0.0000,  0.2023,   0.03458
-      300,   0.0000,  0.2023,   0.03442
-      310,   0.0000,  0.2023,   0.03465
-      320,   0.0000,  0.2023,   0.03435
-      330,   0.0000,  0.2023,   0.03474
-      340,   0.0000,  0.2023,   0.03396
-      350,   0.0000,  0.2023,   0.03427
-      360,   0.0000,  0.2023,   0.03450
-      370,   0.0000,  0.2024,   0.03431
-      380,   0.0000,  0.2024,   0.03454
-      390,   0.0000,  0.2024,   0.03488
-      400,   0.0000,  0.2024,   0.03431
-      410,   0.0000,  0.2024,   0.03456
+        0,   0.0100,  -0.0014,   0.39550
+       10,   0.0042,  0.0013,   0.04827
+       20,   0.0024,  0.0014,   0.01882
+       30,   0.0018,  0.0015,   0.01747
+       40,   0.0013,  0.0016,   0.01482
+       50,   0.0013,  0.0017,   0.01493
+       60,   0.0003,  0.0017,   0.01551
+       70,   0.0004,  0.0017,   0.01487
+       80,   0.0006,  0.0018,   0.01450
+       90,   0.0001,  0.0018,   0.01512
+      100,   0.0002,  0.0018,   0.01520
+      110,   0.0002,  0.0018,   0.01484
+      120,   0.0001,  0.0018,   0.01514
+      130,   0.0001,  0.0018,   0.01504
+      140,   0.0001,  0.0018,   0.01515
+      150,   0.0000,  0.0018,   0.01561
+      160,   0.0000,  0.0018,   0.01565
+      170,   0.0000,  0.0018,   0.01514
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -695,7 +672,7 @@ Iteration, StepSize,    Cost,   Error
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_digits</span><span class="p">)</span><span class="o">/</span><span class="n">num_digits</span>
-<span class="n">bary</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Barycenter</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+<span class="n">bary</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Barycenter</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -714,6 +691,7 @@ Iteration, StepSize,    Cost,   Error
 
 <span class="n">axs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bary</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">)</span>
 <span class="n">axs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Barycenter&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -722,22 +700,6 @@ Iteration, StepSize,    Cost,   Error
 </div>
 <div class="output_area docutils container">
 <img alt="../_images/examples_MNISTBarycenter_16_0.png" src="../_images/examples_MNISTBarycenter_16_0.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
 </div>
 </div>
 </section>

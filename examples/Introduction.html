@@ -425,10 +425,10 @@ div.rendered_html tbody tr:hover {
 <section id="Introduction-to-MMOT-with-Pairwise-Costs">
 <h1>Introduction to MMOT with Pairwise Costs<a class="headerlink" href="#Introduction-to-MMOT-with-Pairwise-Costs" title="Permalink to this headline">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">from</span> <span class="nn">mmot</span> <span class="kn">import</span> <span class="n">MMOTSolver</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mmot</span> <span class="kn">import</span> <span class="n">MMOTSolver</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -437,7 +437,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grid of size n1 x n2</span>
@@ -495,7 +495,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">unroll_node</span> <span class="o">=</span> <span class="mi">0</span>
@@ -551,22 +551,39 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dual_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())]</span>
 
 <span class="n">num_its</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">ftol</span> <span class="o">=</span> <span class="mf">1e-7</span>
+<span class="n">gtol</span> <span class="o">=</span> <span class="mf">1e-4</span>
 <span class="n">root_node</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">costs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_its</span><span class="p">)</span>
 
+<span class="n">root_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())</span>
+<span class="n">root_cycler</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">root_nodes</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration, StepSize,    Cost,   Error&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_its</span><span class="p">):</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Step</span><span class="p">(</span><span class="n">root_node</span><span class="p">,</span> <span class="n">dual_vars</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Step</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">root_cycler</span><span class="p">),</span> <span class="n">dual_vars</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
+
     <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">ComputeCost</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">step_size</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">StepSizeUpdate</span><span class="p">(</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+
     <span class="k">if</span><span class="p">((</span><span class="n">i</span><span class="o">%</span><span class="k">10</span>)==0):
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:9d}</span><span class="s1">,   </span><span class="si">{:0.4f}</span><span class="s1">,  </span><span class="si">{:0.4f}</span><span class="s1">,   </span><span class="si">{:0.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">error</span><span class="p">))</span>
+
+    <span class="c1"># Check for convergence in cost</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">&lt;</span><span class="n">ftol</span><span class="p">):</span>
+        <span class="k">break</span>
+
+    <span class="c1"># Check for convergence via gradient</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="o">&lt;</span><span class="n">gtol</span><span class="p">):</span>
+        <span class="k">break</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -579,16 +596,15 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Iteration, StepSize,    Cost,   Error
-        0,   0.0500,  -0.0100,   0.59417
-       10,   0.0500,  0.5894,   1.03309
-       20,   0.0500,  0.7030,   0.07152
-       30,   0.0500,  0.7171,   0.01892
-       40,   0.0500,  0.7217,   0.00725
-       50,   0.0500,  0.7238,   0.00365
-       60,   0.0500,  0.7249,   0.00215
-       70,   0.0500,  0.7256,   0.00137
-       80,   0.0500,  0.7261,   0.00091
-       90,   0.0500,  0.7263,   0.00069
+        0,   0.1000,  0.2571,   3.23370
+       10,   0.1000,  0.7046,   0.25986
+       20,   0.0422,  0.7243,   0.04877
+       30,   0.0316,  0.7265,   0.00457
+       40,   0.0178,  0.7270,   0.00256
+       50,   0.0075,  0.7272,   0.00157
+       60,   0.0075,  0.7272,   0.00474
+       70,   0.0056,  0.7273,   0.00146
+       80,   0.0042,  0.7273,   0.00220
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -596,63 +612,6 @@ Iteration, StepSize,    Cost,   Error
 </div>
 <div class="output_area docutils container">
 <img alt="../_images/examples_Introduction_4_1.png" src="../_images/examples_Introduction_4_1.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">prob2</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">)</span>
-<span class="n">dual_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())]</span>
-<span class="n">costs2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_its</span><span class="p">)</span>
-<span class="n">root_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())</span>
-<span class="n">root_cycler</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">root_nodes</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration, StepSize,    Cost,   Error&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_its</span><span class="p">):</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">prob2</span><span class="o">.</span><span class="n">Step</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">root_cycler</span><span class="p">),</span> <span class="n">dual_vars</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
-    <span class="n">costs2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob2</span><span class="o">.</span><span class="n">ComputeCost</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">)</span>
-    <span class="k">if</span><span class="p">((</span><span class="n">i</span><span class="o">%</span><span class="k">10</span>)==0):
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:9d}</span><span class="s1">,   </span><span class="si">{:0.4f}</span><span class="s1">,  </span><span class="si">{:0.4f}</span><span class="s1">,   </span><span class="si">{:0.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">error</span><span class="p">))</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">costs2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-Iteration, StepSize,    Cost,   Error
-        0,   0.0500,  -0.0100,   3.23370
-       10,   0.0500,  0.5894,   0.93195
-       20,   0.0500,  0.7030,   0.10309
-       30,   0.0500,  0.7171,   0.02721
-       40,   0.0500,  0.7217,   0.00807
-       50,   0.0500,  0.7238,   0.00175
-       60,   0.0500,  0.7249,   0.00464
-       70,   0.0500,  0.7256,   0.00103
-       80,   0.0500,  0.7261,   0.00096
-       90,   0.0500,  0.7263,   0.00057
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/examples_Introduction_5_1.png" src="../_images/examples_Introduction_5_1.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
 </div>
 </div>
 </section>

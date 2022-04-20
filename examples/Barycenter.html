@@ -425,10 +425,10 @@ div.rendered_html tbody tr:hover {
 <section id="Simple-Barycenter-Computation">
 <h1>Simple Barycenter Computation<a class="headerlink" href="#Simple-Barycenter-Computation" title="Permalink to this headline">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">from</span> <span class="nn">mmot</span> <span class="kn">import</span> <span class="n">MMOTSolver</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mmot</span> <span class="kn">import</span> <span class="n">MMOTSolver</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -437,21 +437,16 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Grid of size n1 x n2</span>
-<span class="n">n1</span> <span class="o">=</span> <span class="mi">400</span>   <span class="c1"># x axis</span>
-<span class="n">n2</span> <span class="o">=</span> <span class="mi">400</span>   <span class="c1"># y axis</span>
+<span class="n">n1</span> <span class="o">=</span> <span class="mi">100</span>   <span class="c1"># x axis</span>
+<span class="n">n2</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># y axis</span>
 
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="o">/</span><span class="n">n1</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="o">/</span><span class="n">n1</span><span class="p">,</span><span class="n">n1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="o">/</span><span class="n">n2</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="mf">0.5</span><span class="o">/</span><span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">))</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="mf">0.125</span>
-
-<span class="c1"># positions = np.array([[0.25,0.75],</span>
-<span class="c1">#                       [0.5, 0.75],</span>
-<span class="c1">#                       [ 0.55,0.35],</span>
-<span class="c1">#                       [0.65,0.25]])</span>
 
 <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.25</span><span class="p">,</span><span class="mf">0.25</span><span class="p">],</span>
                       <span class="p">[</span> <span class="mf">0.75</span><span class="p">,</span><span class="mf">0.75</span><span class="p">],</span>
@@ -464,16 +459,7 @@ div.rendered_html tbody tr:hover {
     <span class="n">xc</span><span class="p">,</span><span class="n">yc</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="n">measures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n2</span><span class="p">,</span> <span class="n">n1</span><span class="p">))</span>
     <span class="n">measures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">xc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">yc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mf">100.0</span><span class="p">)</span>
-<span class="c1">#    measures[i][(x-xc)**2 + (y-yc)**2 &lt; r**2] = 1</span>
-
-    <span class="c1"># Normalize</span>
     <span class="n">measures</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*=</span> <span class="n">n1</span><span class="o">*</span><span class="n">n2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">measures</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-<span class="c1"># Plot mu and nu</span>
-<span class="c1"># fig, ax = plt.subplots(1, len(positions), figsize=(12,4))</span>
-<span class="c1"># for i in range(len(positions)):</span>
-<span class="c1">#   ax[i].imshow(measures[i], origin=&#39;lower&#39;, extent=(0,1,0,1))</span>
-<span class="c1">#   ax[i].set_title(&quot;$\\mu_{{ {:0d} }}$&quot;.format(i))</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">)):</span>
@@ -490,7 +476,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">unroll_node</span> <span class="o">=</span> <span class="mi">0</span>
@@ -498,8 +484,10 @@ div.rendered_html tbody tr:hover {
 <span class="c1"># The set A that defines the pairwise costs</span>
 <span class="n">edge_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
 
+<span class="n">bary_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span>
+<span class="n">bary_weights</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">bary_weights</span><span class="p">)</span>
 
-<span class="n">prob</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">)</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">,</span> <span class="n">bary_weights</span><span class="p">)</span>
 
 <span class="n">prob</span><span class="o">.</span><span class="n">Visualize</span><span class="p">(</span><span class="s1">&#39;original&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;CostGraph.svg&#39;</span><span class="p">)</span>
 </pre></div>
@@ -521,15 +509,18 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dual_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())]</span>
 
-<span class="n">num_its</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">num_its</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.25</span>
 <span class="n">root_node</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">costs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_its</span><span class="p">)</span>
+
+<span class="n">ftol</span> <span class="o">=</span> <span class="mf">1e-7</span>
+<span class="n">gtol</span> <span class="o">=</span> <span class="mf">5e-4</span>
 
 <span class="n">root_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())</span>
 <span class="n">root_cycler</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">root_nodes</span><span class="p">)</span>
@@ -542,11 +533,15 @@ div.rendered_html tbody tr:hover {
     <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">step_size</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">StepSizeUpdate</span><span class="p">(</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
 
-    <span class="k">if</span><span class="p">((</span><span class="n">i</span><span class="o">%</span><span class="k">2</span>)==0):
+    <span class="k">if</span><span class="p">((</span><span class="n">i</span><span class="o">%</span><span class="k">10</span>)==0):
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:9d}</span><span class="s1">,   </span><span class="si">{:0.4f}</span><span class="s1">,  </span><span class="si">{:0.4f}</span><span class="s1">,   </span><span class="si">{:0.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">error</span><span class="p">))</span>
 
-    <span class="c1"># Check for convergence</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="o">&lt;</span><span class="mf">5e-5</span><span class="p">):</span>
+    <span class="c1"># Check for convergence in cost</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">&lt;</span><span class="n">ftol</span><span class="p">):</span>
+        <span class="k">break</span>
+
+    <span class="c1"># Check for convergence via gradient</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="o">&lt;</span><span class="n">gtol</span><span class="p">):</span>
         <span class="k">break</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span>
@@ -560,26 +555,10 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Iteration, StepSize,    Cost,   Error
-        0,   0.2000,  0.2408,   1.99973
-        2,   0.2000,  0.4294,   0.56219
-        4,   0.2000,  0.4659,   0.31522
-        6,   0.1000,  0.4787,   0.05600
-        8,   0.1000,  0.4837,   0.08095
-       10,   0.1000,  0.4868,   0.01570
-       12,   0.1000,  0.4877,   0.01486
-       14,   0.1000,  0.4886,   0.00705
-       16,   0.1000,  0.4893,   0.00635
-       18,   0.1000,  0.4897,   0.00389
-       20,   0.1000,  0.4901,   0.00383
-       22,   0.1000,  0.4904,   0.00294
-       24,   0.0500,  0.4906,   0.00321
-       26,   0.0500,  0.4907,   0.00209
-       28,   0.0500,  0.4908,   0.00182
-       30,   0.0500,  0.4909,   0.00176
-       32,   0.0500,  0.4910,   0.00155
-       34,   0.0500,  0.4911,   0.00153
-       36,   0.1000,  0.4912,   0.00134
-       38,   0.1000,  0.4913,   0.00131
+        0,   0.2500,  0.0056,   1.99870
+       10,   0.0334,  0.0473,   0.29398
+       20,   0.0079,  0.0546,   0.01676
+       30,   0.0106,  0.0547,   0.00057
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -589,40 +568,17 @@ Iteration, StepSize,    Cost,   Error
 <img alt="../_images/examples_Barycenter_4_1.png" src="../_images/examples_Barycenter_4_1.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">))</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">measures</span><span class="p">)</span>
-<span class="n">bary</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Barycenter</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+<span class="n">bary</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Barycenter</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/examples_Barycenter_5_0.png" src="../_images/examples_Barycenter_5_0.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;Figure size 432x288 with 0 Axes&gt;
-</pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">measures</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -648,7 +604,7 @@ Iteration, StepSize,    Cost,   Error
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -660,48 +616,34 @@ Text(0.5, 1.0, &#39;True Barycenter&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/examples_Barycenter_7_1.png" src="../_images/examples_Barycenter_7_1.png" />
+<img alt="../_images/examples_Barycenter_6_1.png" src="../_images/examples_Barycenter_6_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_bary</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.6</span><span class="o">*</span><span class="n">n1</span><span class="p">),:])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bary</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.6</span><span class="o">*</span><span class="n">n1</span><span class="p">),:])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_bary</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.6</span><span class="o">*</span><span class="n">n1</span><span class="p">),:],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;True Barycenter&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bary</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.6</span><span class="o">*</span><span class="n">n1</span><span class="p">),:],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Estimated Barycenter&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Barycenter Slice at y=0.6&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[&lt;matplotlib.lines.Line2D at 0x146848880&gt;]
+&lt;matplotlib.legend.Legend at 0x14561b5e0&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/examples_Barycenter_8_1.png" src="../_images/examples_Barycenter_8_1.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<img alt="../_images/examples_Barycenter_7_1.png" src="../_images/examples_Barycenter_7_1.png" />
 </div>
 </div>
 </section>
