@@ -82,7 +82,13 @@ def evaluate_gradient(func, xs, ys):
 
 
 class MMOTSolver:
+  """ Solves the MMOT problem with weighted pairwise squared L2 cost.
 
+      .. math::
+
+
+  """
+  
   def __init__(self, measures, edges, x, y, unroll_node=0, weights=None):
 
       self._measures = measures 
@@ -102,16 +108,37 @@ class MMOTSolver:
           assert(edge[0]!=edge[1])
 
       self._edges = edges 
+      self._edge_weights = dict() 
+      self._bary_weights = None 
 
       if(weights is not None):
-          assert(len(weights)==len(edges))
           assert(np.min(weights)>=0)
-          self._weights = weights
+          
+          # If the weights are defined for each measure
+          if(len(weights)==len(measures)):
+              self._bary_weights = weights 
+              self._bary_weights /= np.sum(self._bary_weights)
+
+              # The edge weights are the products of the barycenter weights 
+              for i in range(len(weights)):
+                  for j in range(i+1,len(weights)):
+                      self._edge_weights[i,j] = weights[i]*weights[j] 
+                      self._edge_weights[j,i] = weights[i]*weights[j]
+        
+          # More general setting where the weights are defined on the edges 
+          elif(len(weights)==len(edges)):          
+              for i, edge in enumerate(edges):
+                  self._edge_weights[edge[0], edge[1]] = weights[i]
+                  self._edge_weights[edge[1], edge[0]] = weights[i]
+          else:
+              raise RuntimeError("Weights passed to MMOTSolver do not have the correct shape.  The number of weights must match either the number of edges or the number of marginals.")
+
       else:
-          self._weights = np.ones(len(edges))
-
-      self._weights /= np.sum(self._weights)
-
+ 
+          for i in range(len(measures)):
+              for j in range(i+1,len(measures)):
+                self._edge_weights[i,j] = 1.0
+                self._edge_weights[j,i] = 1.0
 
       self._unrolled_tree, self._measure_map = self.CreateUndirected(self._measures, self._edges, unroll_node)
 
@@ -143,42 +170,40 @@ class MMOTSolver:
 
       return graph, vertmap
 
-  def Barycenter(self, unrolled_dual_vars, weights):
+  def Barycenter(self, unrolled_dual_vars):
     """ Returns the barycenter of the original measures given dual variables on the unrolled tree.  The dual variables are the same 
         as those that would be passed to the ComputeCost or Step functions.
         
         ARGUMENTS:
-          unrolled_dual_vars (list of np.array) : List of vectors containing the dual variables for each node in the unrolled graph.
-          weights (np.array) : Vector containing weights on each measure in the original problem.  Must sum to one.
+            unrolled_dual_vars (list of np.array) : List of vectors containing the dual variables for each node in the unrolled graph.
+            weights (np.array) : Vector containing weights on each measure in the original problem.  Must sum to one.
 
         RETURNS:
-          np.array : A 2d numpy array containing the barycenter.
+            np.array : A 2d numpy array containing the barycenter.
     """
-
-    assert len(weights) == len(self._measures)
-    assert np.abs(np.sum(weights)-1.0)<1e-14
+    assert(self._bary_weights is not None)
 
     # First, combine the unrolled dual variables to estimate the dual variables in the original problem
     measure_shape = self._measures[0].shape 
     dual_vars = [np.zeros(measure_shape) for i in range(len(self._measures))]
     for i,f in enumerate(unrolled_dual_vars):
-      dual_vars[self._measure_map[i]] += f 
-    
+        dual_vars[self._measure_map[i]] += f 
+
     bary = np.zeros(measure_shape) 
     for i,f in enumerate(dual_vars):
-      bary += push_forward(self._bf, weights[i]*f, self._measures[i], self._x, self._y)
-    
+        bary += push_forward(self._bf, f/self._bary_weights[i], self._measures[i], self._x, self._y)
+
     bary *= np.prod(measure_shape)/np.sum(bary)
 
     #bary = push_forward(self._bf, weights[0]*dual_vars[0], self._measures[0], self._x, self._y)
-      
+        
     return bary 
 
   def NumDual(self):
-    """ Returns the number of vector-valued dual variables, which is equivalent 
-        to the number of vertices in the unrolled tree.
-    """
-    return self._unrolled_tree.vcount()
+      """ Returns the number of vector-valued dual variables, which is equivalent 
+          to the number of vertices in the unrolled tree.
+      """
+      return self._unrolled_tree.vcount()
 
   def CreateDirected(self, root_node):
       """
@@ -302,10 +327,10 @@ class MMOTSolver:
   def StepSizeUpdate(self, sigma, value, oldValue, gradSq):
   
     # Parameters for Armijo-Goldstein
-    scaleDown = 0.95
+    scaleDown = 0.75
     scaleUp   = 1/scaleDown
-    upper = 0.75
-    lower = 25
+    upper = 0.9
+    lower = 0.1
     
     # Armijo-Goldstein
     diff = value - oldValue
@@ -331,41 +356,47 @@ class MMOTSolver:
     # Check to see if we've already taken a step with this root node and can reuse the net fluxes
     if(self.f_tmp is None):
 
-      self.f_tmp = [None]*num_verts
+        self.f_tmp = [None]*num_verts
 
-      # Do the final c-transform to update the root note
-      for layer in self.layers[:-1]:
-        for vert_ind in layer:
-
-          if(self.tree.degree(vert_ind, mode="in")==0):
-            self.f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
+        # Do the final c-transform to update the root note
+        for layer in self.layers[:-1]:
+            for vert_ind in layer:
+          
+                # Get the index of the downstream node 
+                next_vert_ind = self.tree.vs[vert_ind].out_edges()[0].target
+                w = self._edge_weights[self._measure_map[vert_ind],self._measure_map[next_vert_ind]]
+                
+                if(self.tree.degree(vert_ind, mode="in")==0):
+                    self.f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y, w)
             
-          else:
-            # Compute the net flux (f_i - \sum_j f_tmp[j]) at this vertex
-            f_net = np.copy(dual_vars[vert_ind])
-            for edge in self.tree.vs[vert_ind].in_edges():
-              assert(self.f_tmp[edge.source] is not None)
-              f_net -= self.f_tmp[edge.source]
+                else:
+                    # Compute the net flux (f_i - \sum_j`` f_tmp[j]) at this vertex
+                    f_net = np.copy(dual_vars[vert_ind])
+                    for edge in self.tree.vs[vert_ind].in_edges():
+                        assert(self.f_tmp[edge.source] is not None)
+                        f_net -= self.f_tmp[edge.source]
 
-            self.f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
-
-
+                    self.f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y, w)
     
     # Gradient updates for all but root node
     for layer in self.layers[:-1]:
-      for vert_ind in layer:
+        for vert_ind in layer:
 
-        # Update the dual variable at this node 
-        out_edge = self.tree.vs[vert_ind].out_edges()[0]
-        smu = push_forward(self._bf, self.f_tmp[vert_ind], self._measures[self._measure_map[out_edge.target]], self._x, self._y)
-        error += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
+            # Update the dual variable at this node 
+            next_vert_ind = self.tree.vs[vert_ind].out_edges()[0].target
+            w = self._edge_weights[self._measure_map[vert_ind],self._measure_map[next_vert_ind]]
+            smu = push_forward(self._bf, self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
+            error += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
        
     # Do the final c-transform to update the root note
     for layer in self.layers[:-1]:
       for vert_ind in layer:
 
+        next_vert_ind = self.tree.vs[vert_ind].out_edges()[0].target
+        w = self._edge_weights[self._measure_map[vert_ind],self._measure_map[next_vert_ind]]
+
         if(self.tree.degree(vert_ind, mode="in")==0):
-          self.f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y)# C-tranform
+          self.f_tmp[vert_ind] = c_transform(self._bf, dual_vars[vert_ind], self._x, self._y, w)# C-tranform
           
         else:
           # Compute the net flux (f_i - \sum_j f_tmp[j]) at this vertex
@@ -374,7 +405,7 @@ class MMOTSolver:
             assert(self.f_tmp[edge.source] is not None)
             f_net -= self.f_tmp[edge.source]
 
-          self.f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y)
+          self.f_tmp[vert_ind] = c_transform(self._bf, f_net, self._x, self._y, w)
       
     fsum = np.zeros(dual_vars[0].shape)
     for edge in self.tree.vs[self.layers[-1][0]].in_edges():

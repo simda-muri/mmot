@@ -39,10 +39,10 @@ def c_transform(bf, dualVar,x,y, weight=1.0):
     ctransform function is employed.
     """
 
-    phi = convex_conversion(weight*dualVar,x,y)
+    phi = convex_conversion(dualVar/weight,x,y)
     temp = leg_transform(bf,phi)
     
-    return convex_conversion(temp,x,y) / weight
+    return convex_conversion(temp,x,y) * weight
 
 def push_forward(bf, dualVar, marginal, x, y, weight=1.0):
   """ Computes the push forward of the marginal :math:`\mu` given the dual variable :math:`f`.
