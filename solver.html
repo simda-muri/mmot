@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Solver API &#8212; MMOT2D 0.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="BFM Wrapper API" href="bfm.html" />
+    <link rel="prev" title="Barycenter of MNIST Digits" href="examples/MNISTBarycenter.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="index.html">
+<p class="title">MMOT2D</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/Introduction.html">
+  Introduction to MMOT with Pairwise Costs
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/Barycenter.html">
+  Simple Barycenter Computation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/MNISTBarycenter.html">
+  Barycenter of MNIST Digits
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  Solver API
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="bfm.html">
+  BFM Wrapper API
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="graph.html">
+  Graph Utilities API
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-mmot.solver">
+<span id="solver-api"></span><h1>Solver API<a class="headerlink" href="#module-mmot.solver" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mmot.solver.</span></span><span class="sig-name descname"><span class="pre">MMOTSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unroll_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver" title="Permalink to this definition">#</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.Barycenter">
+<span class="sig-name descname"><span class="pre">Barycenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unrolled_dual_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.Barycenter" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the barycenter of the original measures given dual variables on the unrolled tree.  The dual variables are the same
+as those that would be passed to the ComputeCost or Step functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unrolled_dual_vars</strong> (<em>list of np.array</em>) – List of vectors containing the dual variables for each node in the unrolled graph.</p></li>
+<li><p><strong>weights</strong> (<em>np.array</em>) – Vector containing weights on each measure in the original problem.  Must sum to one.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A 2d numpy array containing the barycenter.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.ComputeCost">
+<span class="sig-name descname"><span class="pre">ComputeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dual_vars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.ComputeCost" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the multi-marginal dual objective function.</p>
+<p>The dual objective function is given by
+Σ_i ∫ f_i ν_i(x)dx</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.CreateDirected">
+<span class="sig-name descname"><span class="pre">CreateDirected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.CreateDirected" title="Permalink to this definition">#</a></dt>
+<dd><p>Uses a breadth-first search to convert the undirected tree into a directed
+tree where all edges “flow” towards the given root_node.  This function
+starts with the undirected tree created by a call to <code class="code docutils literal notranslate"><span class="pre">CreateUndirected</span></code>
+in the <code class="code docutils literal notranslate"><span class="pre">__init__</span></code> function and stored as a member variable in
+<code class="code docutils literal notranslate"><span class="pre">self._unrolled_tree</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>A directed graph containing a tree with the specified root node.</p>
+<dl class="simple">
+<dt>list(list(int))<span class="classifier">A list of lists containing the vertices in each layer of the tree.</span></dt><dd><p>layers[i] contains the indices of vertices in layer i of the tree.
+layers[0] contains the vertices that are farthest from the root node.
+layers[-1] contains just the root node.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>igraph.Graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.CreateUndirected">
+<span class="sig-name descname"><span class="pre">CreateUndirected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measures</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unroll_node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.CreateUndirected" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates the unrolled undirected graph (needed to construct tree)</p>
+<blockquote>
+<div><dl class="simple">
+<dt>RETURNS:</dt><dd><dl class="simple">
+<dt>igraph.Graph<span class="classifier">An undirected tree constructed by “unrolling” the original</span></dt><dd><p>pairwise cost graph.  Note that some of the measures may
+be duplicated during the “unrolling” process, causing this
+tree to have more nodes than the original number of measures.</p>
+</dd>
+<dt>list(int)<span class="classifier">A mapping from vertices in the unrolled tree to vertices (i.e., marginals)</span></dt><dd><p>in the original undirected graph.   The i-th component of this
+list contains the index of the measure that matches the i-th vertex in the tree.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.NumDual">
+<span class="sig-name descname"><span class="pre">NumDual</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.NumDual" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the number of vector-valued dual variables, which is equivalent
+to the number of vertices in the unrolled tree.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.Step">
+<span class="sig-name descname"><span class="pre">Step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dual_vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.Step" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.StepSizeUpdate">
+<span class="sig-name descname"><span class="pre">StepSizeUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oldValue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradSq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.StepSizeUpdate" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mmot.solver.MMOTSolver.Visualize">
+<span class="sig-name descname"><span class="pre">Visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.MMOTSolver.Visualize" title="Permalink to this definition">#</a></dt>
+<dd><p>Visualizes the undirected (or optionally directed) tree representation of the
+cost graph.  The nodes in the tree will be labeled with pairs in the measure_map.
+The first integer in the label corresponds to the index in the tree and the
+second integer corresponds to the original measure.   Nodes in a directed tree
+will be colored based on their layer, which corresponds to the number of
+edges between the node and the root node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>root_node</strong> (<em>None</em><em>, </em><em>int</em><em>, or </em><em>string</em>) – If an integer, a directed tree flowing into this node
+will be constructed and visualized.  If root_node==’original’,
+the original unrolled graph will be visualized.  Otherwise the
+unrolled, but undirected, tree will be visualized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.solver.evaluate_gradient">
+<span class="sig-prename descclassname"><span class="pre">mmot.solver.</span></span><span class="sig-name descname"><span class="pre">evaluate_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.evaluate_gradient" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes an approximation of the gradient of a 2d scalar function defined at cell centers.</p>
+<p>Evaluates the gradient of a scalar function defined on an n1xn2 regular grid.  Assumes the values of
+the function are at the cell centers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>np.array</em>) – Nx by Ny matrix of function values at the cell centers</p></li>
+<li><p><strong>xs</strong> (<em>np.array</em>) – A length M vector containing the x component of the points where the function’s gradient should be evaluated</p></li>
+<li><p><strong>ys</strong> (<em>np.array</em>) – A length M vector containing the y component of the points where the function’s gradient should be evaluated</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A length M vector containing the x derivative of the function at the points (xs[i],ys[i])
+np.array : A length M vector containing the y derivative of the function at the points (xs[i],ys[i])</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.solver.interpolate_function">
+<span class="sig-prename descclassname"><span class="pre">mmot.solver.</span></span><span class="sig-name descname"><span class="pre">interpolate_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.solver.interpolate_function" title="Permalink to this definition">#</a></dt>
+<dd><p>Bilinear interpolation of a function defined at cell centers.</p>
+<p>Mimics the BFM “interpolate_function” function, which assumes the values of “func” live at the center of
+each pixel and uses bilinear interpolation to interpolate between points.  The values around the edge are
+duplicated at “ghost” points to estimate the function in the half-pixel boundary around the edge.  The gradient
+in this boundary region is therefore zero.</p>
+<p>See for example, <a class="reference external" href="https://github.com/Math-Jacobs/bfm/blob/c93de454c49c6958e0a8e18b285c2e005b55507f/python/src/main.cpp#L263">https://github.com/Math-Jacobs/bfm/blob/c93de454c49c6958e0a8e18b285c2e005b55507f/python/src/main.cpp#L263</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>np.array</em>) – Nx by Ny matrix of function values at the cell centers</p></li>
+<li><p><strong>xs</strong> (<em>np.array</em>) – A length M vector containing the x component of the points where the function is to be evaluated</p></li>
+<li><p><strong>ys</strong> (<em>np.array</em>) – A length M vector containing the y component of the points where the function is to be evaluated</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The values of the function at the points (xs[i],ys[i])</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="examples/MNISTBarycenter.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Barycenter of MNIST Digits</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="bfm.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">BFM Wrapper API</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, Matthew Parno and Bohan Zhou.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

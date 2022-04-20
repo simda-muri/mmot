@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>BFM Wrapper API &#8212; MMOT2D 0.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graph Utilities API" href="graph.html" />
+    <link rel="prev" title="Solver API" href="solver.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="index.html">
+<p class="title">MMOT2D</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/Introduction.html">
+  Introduction to MMOT with Pairwise Costs
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/Barycenter.html">
+  Simple Barycenter Computation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/MNISTBarycenter.html">
+  Barycenter of MNIST Digits
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="solver.html">
+  Solver API
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  BFM Wrapper API
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="graph.html">
+  Graph Utilities API
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-mmot.bfm_utilities">
+<span id="bfm-wrapper-api"></span><h1>BFM Wrapper API<a class="headerlink" href="#module-mmot.bfm_utilities" title="Permalink to this headline">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.ascent_direction">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">ascent_direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.ascent_direction" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the ascent direction</p>
+<p>g = Δ⁻¹(ρ − ν)</p>
+<p>and the squared norm</p>
+<p><a href="#id1"><span class="problematic" id="id2">|</span></a>g|^2</p>
+<p>This function does not change the values of rho and nu</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.c_transform">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">c_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dualVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.c_transform" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the c transform of the Kantorovich dual variable.</p>
+<p>First, the dual variable is converted to convex form and then the bf module’s
+ctransform function is employed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.convex_conversion">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">convex_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.convex_conversion" title="Permalink to this definition">#</a></dt>
+<dd><p>Given the dual variable g(x) evaluated at the points x, this function returns
+the ϕ(x) = ½|x|² - g(x)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.dct2">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">dct2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.dct2" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.idct2">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">idct2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.idct2" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.initialize_kernel">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">initialize_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.initialize_kernel" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.leg_transform">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">leg_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.leg_transform" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the legendre transform of the convex dual variable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.push_forward">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">push_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dualVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.push_forward" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes the push forward of the marginal <span class="math notranslate nohighlight">\(\mu\)</span> given the dual variable <span class="math notranslate nohighlight">\(f\)</span>.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[c(x,y) = h(y-x) =\]</div>
+</div></blockquote>
+<p>rac{w}{2}|x-y|^2</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[S(x) = x - (\]</div>
+</div></blockquote>
+<p>abla h)^{-1} (
+abla g)</p>
+<blockquote>
+<div><p>The BFM code evaluates</p>
+<div class="math notranslate nohighlight">
+\[\left(\]</div>
+</div></blockquote>
+<p>abla phi)_sharp mu</p>
+<blockquote>
+<div><p>So to evaluate S, we need</p>
+<div class="math notranslate nohighlight">
+\[x - (\]</div>
+</div></blockquote>
+<p>abla h)^{-1} circ (
+abla g) (x) = (I - w^{-1} (
+abla g))(x)  =
+abla(
+rac{1}{2}|x|^2 - w^{-1}g)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mmot.bfm_utilities.update_potential">
+<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">update_potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.update_potential" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Update f as</dt><dd><p>f ← f + σ Δ⁻¹(ρ − ν) = f - σ Δ⁻¹(ν - ρ)</p>
+</dd>
+<dt>and return the error</dt><dd><p>∫(−Δ)⁻¹(ρ−ν) (ρ−ν)</p>
+</dd>
+</dl>
+<p>Modifies phi and rho</p>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="solver.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Solver API</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="graph.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Graph Utilities API</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, Matthew Parno and Bohan Zhou.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
