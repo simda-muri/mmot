@@ -13,9 +13,11 @@ jobs:
         uses: actions/checkout@v1
         with:
           submodules: recursive
+      
+      - name: Install system pandoc 
+        run: sudo apt-get install -y pandoc
         
       - name: Install sphinx extensions 
-        run: sudo apt-get install -y pandoc
         run: pip3 install -U sphinx pydata-sphinx-theme jinja2 sphinx_panels nbsphinx pandoc ipython ipykernel pygments
 
       - name: Install MMOT and run sphinx
