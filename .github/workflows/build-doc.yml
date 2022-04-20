@@ -1,0 +1,30 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          submodules: recursive
+        
+      - name: Install sphinx extensions 
+        run: pip3 install -U sphinx pydata-sphinx-theme jinja2 sphinx_panels nbsphinx pandoc ipython ipykernel
+
+      - name: Run Sphinx
+        run: |
+          cd ${{ github.workspace }}
+          sphinx-build -b html docs/source/ docs/build/html
+
+      - name: Push to gh-pages 
+        uses: peaceiris/actions-gh-pages@v3.6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/html
+

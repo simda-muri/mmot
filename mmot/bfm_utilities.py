@@ -32,24 +32,45 @@ def convex_conversion(g,x,y):
   """
   return 0.5*(x*x+y*y) - g
   
-def c_transform(bf, dualVar,x,y):
+def c_transform(bf, dualVar,x,y, weight=1.0):
     """ Returns the c transform of the Kantorovich dual variable.  
 
     First, the dual variable is converted to convex form and then the bf module's
     ctransform function is employed.
     """
-    output = np.zeros(dualVar.shape)
 
-    phi = convex_conversion(dualVar,x,y)
-    output = leg_transform(bf,phi)
-    output = convex_conversion(output,x,y)
+    phi = convex_conversion(weight*dualVar,x,y)
+    temp = leg_transform(bf,phi)
+    
+    return convex_conversion(temp,x,y) / weight
 
-    return output
+def push_forward(bf, dualVar, marginal, x, y, weight=1.0):
+  """ Computes the push forward of the marginal :math:`\mu` given the dual variable :math:`f`.
 
-def push_forward(bf, dualVar, marginal, x, y):
-  
+    .. math::
+
+        c(x,y) = h(y-x) = \frac{w}{2}\|x-y\|^2
+
+    .. math::
+
+        S(x) = x - (\nabla h)^{-1} (\nabla g)
+
+    The BFM code evaluates 
+
+    .. math::
+
+        \left(\nabla \phi)_\sharp \mu 
+
+    So to evaluate S, we need 
+
+    .. math::
+
+        x - (\nabla h)^{-1} \circ (\nabla g) (x) = (I - w^{-1} (\nabla g))(x)  = \nabla( \frac{1}{2}\|x\|^2 - w^{-1}g)
+        
+
+  """
   # Convert to convex form, which is what the bf module expects
-  phi = convex_conversion(dualVar, x,y)
+  phi = convex_conversion(dualVar/weight, x,y)
  
   # Push forward
   output = np.zeros(marginal.shape)  

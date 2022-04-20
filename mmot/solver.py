@@ -85,39 +85,43 @@ class MMOTSolver:
 
   def __init__(self, measures, edges, x, y, unroll_node=0, weights=None):
 
-    self._measures = measures 
-    num_marginals = len(measures)
-    
-    self.f_tmp = None 
-    self.save_root_node = -1
+      self._measures = measures 
+      num_marginals = len(measures)
+      
+      self.f_tmp = None 
+      self.save_root_node = -1
 
-    self._x = x 
-    self._y = y
+      self._x = x 
+      self._y = y
 
-    # Check to make sure the edge definitions are consistent with the number of measures
-    for edge in edges:
-      assert(len(edge)==2)
-      assert(edge[0]<len(measures))
-      assert(edge[1]<len(measures))
-      assert(edge[0]!=edge[1])
+      # Check to make sure the edge definitions are consistent with the number of measures
+      for edge in edges:
+          assert(len(edge)==2)
+          assert(edge[0]<len(measures))
+          assert(edge[1]<len(measures))
+          assert(edge[0]!=edge[1])
 
-    self._edges = edges 
+      self._edges = edges 
 
-    if(weights is not None):
-      assert(len(weights)==len(edges))
-      self._weights = weights
-    else:
-      self._weights = np.zeros(len(edges))
+      if(weights is not None):
+          assert(len(weights)==len(edges))
+          assert(np.min(weights)>=0)
+          self._weights = weights
+      else:
+          self._weights = np.ones(len(edges))
 
-    self._unrolled_tree, self._measure_map = self.CreateUndirected(self._measures, self._edges, self._weights, unroll_node)
+      self._weights /= np.sum(self._weights)
 
-    self._n1, self._n2 = measures[0].shape
 
-    self._bf = BFM(self._n1, self._n2, measures[0])
+      self._unrolled_tree, self._measure_map = self.CreateUndirected(self._measures, self._edges, unroll_node)
 
-    self._kernel = initialize_kernel(self._n1, self._n2)
+      self._n1, self._n2 = measures[0].shape
 
-  def CreateUndirected(self, measures, edges, weights, unroll_node):
+      self._bf = BFM(self._n1, self._n2, measures[0])
+
+      self._kernel = initialize_kernel(self._n1, self._n2)
+
+  def CreateUndirected(self, measures, edges, unroll_node):
       """
       Creates the unrolled undirected graph (needed to construct tree)
 
@@ -298,10 +302,10 @@ class MMOTSolver:
   def StepSizeUpdate(self, sigma, value, oldValue, gradSq):
   
     # Parameters for Armijo-Goldstein
-    scaleDown = 0.5
+    scaleDown = 0.95
     scaleUp   = 1/scaleDown
-    upper = 1.0-1e-4
-    lower = 1e-4
+    upper = 0.75
+    lower = 25
     
     # Armijo-Goldstein
     diff = value - oldValue

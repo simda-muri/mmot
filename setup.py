@@ -11,7 +11,7 @@ setup(
     packages=['mmot'],
     install_requires=['scipy',
                       'numpy',
-		      'matplotlib',
+		              'matplotlib',
                       'cairocffi',
                       'igraph',
                       'w2 @ git+https://github.com/Math-Jacobs/bfm@main#egg=w2&subdirectory=python'
