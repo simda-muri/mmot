@@ -15,7 +15,7 @@ jobs:
           submodules: recursive
         
       - name: Install sphinx extensions 
-        run: pip3 install -U sphinx pydata-sphinx-theme jinja2 sphinx_panels nbsphinx pandoc ipython ipykernel pygments
+        run: pip3 install -U sphinx pydata-sphinx-theme jinja2 sphinx_panels nbsphinx pandoc ipython ipykernel pygments pandoc
 
       - name: Run Sphinx
         run: |
