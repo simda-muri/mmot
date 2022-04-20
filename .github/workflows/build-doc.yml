@@ -17,9 +17,10 @@ jobs:
       - name: Install sphinx extensions 
         run: pip3 install -U sphinx pydata-sphinx-theme jinja2 sphinx_panels nbsphinx pandoc ipython ipykernel pygments pandoc
 
-      - name: Run Sphinx
+      - name: Install MMOT and run sphinx
         run: |
           cd ${{ github.workspace }}
+          pip install .
           sphinx-build -b html docs/source/ docs/build/html
 
       - name: Push to gh-pages 
