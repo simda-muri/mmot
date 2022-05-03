@@ -52,6 +52,7 @@ Contents
    examples/Introduction.ipynb
    examples/Barycenter.ipynb
    examples/MNISTBarycenter.ipynb
+   examples/PushForwardTest.ipynb
    
 .. toctree::
    :maxdepth: 2
