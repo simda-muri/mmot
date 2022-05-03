@@ -2,6 +2,12 @@ import numpy as np
 from scipy.fftpack import dctn, idctn
 from w2 import BFM
 
+from scipy.interpolate import interp2d
+from scipy.interpolate import LinearNDInterpolator
+
+import matplotlib.pyplot as plt 
+from shapely.geometry import Polygon
+
 # Initialize Fourier kernel
 def initialize_kernel(n1, n2):
     xx, yy = np.meshgrid(np.linspace(0,np.pi,n1,False), np.linspace(0,np.pi,n2,False))
@@ -43,6 +49,68 @@ def c_transform(bf, dualVar,x,y, weight=1.0):
     temp = leg_transform(bf,phi)
     
     return convex_conversion(temp,x,y) * weight
+
+def gradient(f):
+    """
+    Computes the gradient of f using finite differences.  Assumes the gradient at the boundaries is
+    zero and that values of f are defined at cell centers.
+
+    ARGUMENTS:
+        f (np.array) : A function defined at the pixel centers
+
+    RETURNS:
+        gradx (np.array) : A finite difference approximation of the derivative of f in the x direction.
+        grady (np.array) : A finite difference approximation of the  derivative of f in the y direction.
+    """
+
+    assert(len(f.shape)==2)
+
+    ny,nx = f.shape 
+
+    # Compute the gradient of the dual variable.  Assume gradient at boundaries is zero
+    dy = 1.0/ny
+    grady = np.zeros(f.shape)
+    grady[1:-1,:] = (f[2:,:] - f[0:-2,:])/(2.0*dy) # Interior nodes gradient
+    grady[0,:] = 0.5*(f[1,:]-f[0,:])/dy # Bottom row 
+    grady[-1,:] = 0.5*(f[-1,:]-f[-2,:])/dy # Top row 
+    
+    dx = 1.0/nx
+    gradx = np.zeros(f.shape)
+    gradx[:,1:-1] = (f[:,2:] - f[:,0:-2])/(2.0*dx) # Interior nodes gradient
+    gradx[:,0] = 0.5*(f[:,1]-f[:,0])/dx # Left 
+    gradx[:,-1] = 0.5*(f[:,-1]-f[:,-2])/dx # Top row 
+
+    return gradx, grady
+
+
+def push_forward2(dualVar, src_dens, X1, X2, weight=1.0):
+
+    ny,nx = dualVar.shape 
+
+    gradx, grady = gradient(dualVar/weight)
+
+    newx = X1 - gradx 
+    newy = X2 - grady
+
+    hessxx, hessxy = gradient(gradx)
+    hessyx, hessyy = gradient(grady)
+
+    nugget = 1e-8
+    jacdet = (1.0-hessxx + nugget)*(1.0-hessyy + nugget) - hessxy*hessyx
+    tgt_dens = src_dens / np.abs(jacdet)
+
+    interp = LinearNDInterpolator(list(zip(newx.ravel(), newy.ravel())), tgt_dens.ravel())
+    
+    tgt_dens_interp = interp(X1,X2)
+    tgt_dens_interp[np.isnan(tgt_dens_interp)] = 0.0
+    tgt_dens_interp *= (nx*ny) / np.sum(tgt_dens_interp)
+
+    return tgt_dens_interp
+
+    
+
+
+
 
 def push_forward(bf, dualVar, marginal, x, y, weight=1.0):
   """ Computes the push forward of the marginal :math:`\mu` given the dual variable :math:`f`.
@@ -93,9 +161,14 @@ def update_potential(f, rho, nu, kernel, sigma):
     workspace = dct2(rho) / kernel
     workspace[0,0] = 0
     workspace = idct2(workspace)
-    
+
     f += sigma * workspace
     h1 = np.sum(workspace * rho) / (n1*n2)
+
+    # fig,axs = plt.subplots(ncols=2)
+    # axs[0].imshow(rho)
+    # axs[1].imshow(workspace)
+
     
     return h1
     

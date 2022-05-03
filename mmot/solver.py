@@ -124,10 +124,16 @@ class MMOTSolver:
     for i,f in enumerate(unrolled_dual_vars):
         dual_vars[self._measure_map[i]] += f 
 
+    # fig, axs = plt.subplots(ncols=len(dual_vars))
+    # for i, f in enumerate(dual_vars):
+    #     axs[i].imshow(f)
+    # fig.suptitle('Dual Variables for Barycenter')
+
     bary = np.zeros(measure_shape) 
     for i,f in enumerate(dual_vars):
         if(self._bary_weights[i]>1e-8):
             bary += push_forward(self._bf, f/self._bary_weights[i], self._measures[i], self._x, self._y)
+            #bary += push_forward2(f/self._bary_weights[i], self._measures[i], self._x, self._y)
 
     bary *= np.prod(measure_shape)/np.sum(bary)
 
@@ -265,8 +271,8 @@ class MMOTSolver:
     # Parameters for Armijo-Goldstein
     scaleDown = 0.75
     scaleUp   = 1/scaleDown
-    upper = 0.9
-    lower = 0.1
+    upper = 0.99
+    lower = 0.01
     
     # Armijo-Goldstein
     diff = value - oldValue
@@ -278,7 +284,7 @@ class MMOTSolver:
     return sigma
     
   def Step(self, root_node, dual_vars, step_size):
-
+      
     if(root_node != self.save_root_node):
       self.save_root_node = root_node 
       self.tree, self.layers = self.CreateDirected(root_node)
@@ -286,7 +292,7 @@ class MMOTSolver:
 
     num_verts = self.tree.vcount()
 
-    error = 0.0    
+    grad_squared_norm = 0.0 # Squared norm of the gradient 
 
 
     # Check to see if we've already taken a step with this root node and can reuse the net fluxes
@@ -322,7 +328,9 @@ class MMOTSolver:
             next_vert_ind = self.tree.vs[vert_ind].out_edges()[0].target
             w = self._edge_weights[self._measure_map[vert_ind],self._measure_map[next_vert_ind]]
             smu = push_forward(self._bf, self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
-            error += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
+            #smu = push_forward2(self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
+            
+            grad_squared_norm += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
        
     # Do the final c-transform to update the root note
     for layer in self.layers[:-1]:
@@ -349,4 +357,4 @@ class MMOTSolver:
 
     dual_vars[self.layers[-1][0]] = fsum
 
-    return error
+    return grad_squared_norm
