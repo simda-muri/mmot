@@ -30,8 +30,6 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Graph Utilities API" href="graph.html" />
@@ -174,99 +172,8 @@
               
               <div>
                 
-  <section id="module-mmot.bfm_utilities">
-<span id="bfm-wrapper-api"></span><h1>BFM Wrapper API<a class="headerlink" href="#module-mmot.bfm_utilities" title="Permalink to this headline">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.ascent_direction">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">ascent_direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.ascent_direction" title="Permalink to this definition">#</a></dt>
-<dd><p>Computes the ascent direction</p>
-<p>g = Δ⁻¹(ρ − ν)</p>
-<p>and the squared norm</p>
-<p><a href="#id1"><span class="problematic" id="id2">|</span></a>g|^2</p>
-<p>This function does not change the values of rho and nu</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.c_transform">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">c_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dualVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.c_transform" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the c transform of the Kantorovich dual variable.</p>
-<p>First, the dual variable is converted to convex form and then the bf module’s
-ctransform function is employed.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.convex_conversion">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">convex_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.convex_conversion" title="Permalink to this definition">#</a></dt>
-<dd><p>Given the dual variable g(x) evaluated at the points x, this function returns
-the ϕ(x) = ½|x|² - g(x)</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.dct2">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">dct2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.dct2" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.idct2">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">idct2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.idct2" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.initialize_kernel">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">initialize_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.initialize_kernel" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.leg_transform">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">leg_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.leg_transform" title="Permalink to this definition">#</a></dt>
-<dd><p>Returns the legendre transform of the convex dual variable.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.push_forward">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">push_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dualVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marginal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.push_forward" title="Permalink to this definition">#</a></dt>
-<dd><p>Computes the push forward of the marginal <span class="math notranslate nohighlight">\(\mu\)</span> given the dual variable <span class="math notranslate nohighlight">\(f\)</span>.</p>
-<blockquote>
-<div><div class="math notranslate nohighlight">
-\[c(x,y) = h(y-x) =\]</div>
-</div></blockquote>
-<p>rac{w}{2}|x-y|^2</p>
-<blockquote>
-<div><div class="math notranslate nohighlight">
-\[S(x) = x - (\]</div>
-</div></blockquote>
-<p>abla h)^{-1} (
-abla g)</p>
-<blockquote>
-<div><p>The BFM code evaluates</p>
-<div class="math notranslate nohighlight">
-\[\left(\]</div>
-</div></blockquote>
-<p>abla phi)_sharp mu</p>
-<blockquote>
-<div><p>So to evaluate S, we need</p>
-<div class="math notranslate nohighlight">
-\[x - (\]</div>
-</div></blockquote>
-<p>abla h)^{-1} circ (
-abla g) (x) = (I - w^{-1} (
-abla g))(x)  =
-abla(
-rac{1}{2}|x|^2 - w^{-1}g)</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mmot.bfm_utilities.update_potential">
-<span class="sig-prename descclassname"><span class="pre">mmot.bfm_utilities.</span></span><span class="sig-name descname"><span class="pre">update_potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mmot.bfm_utilities.update_potential" title="Permalink to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Update f as</dt><dd><p>f ← f + σ Δ⁻¹(ρ − ν) = f - σ Δ⁻¹(ν - ρ)</p>
-</dd>
-<dt>and return the error</dt><dd><p>∫(−Δ)⁻¹(ρ−ν) (ρ−ν)</p>
-</dd>
-</dl>
-<p>Modifies phi and rho</p>
-</dd></dl>
-
+  <section id="bfm-wrapper-api">
+<h1>BFM Wrapper API<a class="headerlink" href="#bfm-wrapper-api" title="Permalink to this headline">#</a></h1>
 </section>
 
 
