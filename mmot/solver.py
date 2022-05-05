@@ -100,7 +100,6 @@ class MMOTSolver:
       self._orig_graph.add_vertices(len(measures))
       self._orig_graph.add_edges(edges)
 
-      print(unroll_node)
       graph, vertmap = self._orig_graph.unfold_tree(roots=[unroll_node])
 
       return graph, vertmap
@@ -132,12 +131,12 @@ class MMOTSolver:
     bary = np.zeros(measure_shape) 
     for i,f in enumerate(dual_vars):
         if(self._bary_weights[i]>1e-8):
-            bary += push_forward(self._bf, f/self._bary_weights[i], self._measures[i], self._x, self._y)
-            #bary += push_forward2(f/self._bary_weights[i], self._measures[i], self._x, self._y)
+            #bary += push_forward(self._bf, f/self._bary_weights[i], self._measures[i], self._x, self._y)
+            bary += push_forward3(f/self._bary_weights[i], self._measures[i], self._x, self._y)
 
     bary *= np.prod(measure_shape)/np.sum(bary)
 
-    #bary = push_forward(self._bf, weights[0]*dual_vars[0], self._measures[0], self._x, self._y)
+    #bary = push_forward3(dual_vars[0]/self._bary_weights[0], self._measures[0], self._x, self._y)
         
     return bary 
 

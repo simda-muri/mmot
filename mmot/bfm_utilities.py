@@ -6,7 +6,7 @@ from scipy.interpolate import interp2d
 from scipy.interpolate import LinearNDInterpolator
 
 import matplotlib.pyplot as plt 
-from shapely.geometry import Polygon
+from shapely.geometry import box, Polygon
 
 # Initialize Fourier kernel
 def initialize_kernel(n1, n2):
@@ -82,6 +82,42 @@ def gradient(f):
 
     return gradx, grady
 
+def hessian(f):
+    """
+    Computes the gradient of f using finite differences.  Assumes the gradient at the boundaries is
+    zero and that values of f are defined at cell centers.
+
+    ARGUMENTS:
+        f (np.array) : A function defined at the pixel centers
+
+    RETURNS:
+        gradx (np.array) : A finite difference approximation of the derivative of f in the x direction.
+        grady (np.array) : A finite difference approximation of the  derivative of f in the y direction.
+    """
+
+    assert(len(f.shape)==2)
+
+    ny,nx = f.shape 
+
+    # Compute the gradient of the dual variable.  Assume gradient at boundaries is zero
+    dy = 1.0/ny
+    dx = 1.0/nx 
+
+    Hyy = np.zeros((nx,ny))
+    Hyy[1:-1,:] = (f[2:,:] - 2.0*f[1:-1,:] + f[0:-2,:])/(dy*dy)
+    Hyy[0,:] = (f[2,:] - f[1,:])/(dx*dx)
+    Hyy[-1,:] = -(f[-1,:] - f[-2,:])/(dx*dx)
+     
+    Hyx = np.zeros((nx,ny))
+    Hyx[1:-1,1:-1] = (0.25/(dx*dy))*(f[2:,2:] - f[0:-2,2:] - f[2:,0:-2] + f[0:-2,0:-2])
+    
+    Hxx = np.zeros((nx,ny))
+    Hxx[:,1:-1] = (f[:,2:] - 2.0*f[:,1:-1] + f[:,0:-2])/(dx*dx)
+    Hxx[:,1] = (f[:,2] - f[:,1])/(dx*dx)
+    Hxx[:,-1] = -(f[:,-1] - f[:,-2])/(dx*dx)
+    
+    return Hxx, Hyy, Hyx
+
 
 def push_forward2(dualVar, src_dens, X1, X2, weight=1.0):
 
@@ -92,11 +128,10 @@ def push_forward2(dualVar, src_dens, X1, X2, weight=1.0):
     newx = X1 - gradx 
     newy = X2 - grady
 
-    hessxx, hessxy = gradient(gradx)
-    hessyx, hessyy = gradient(grady)
+    hessxx, hessyy, hessyx = hessian(dualVar/weight)
 
-    nugget = 1e-8
-    jacdet = (1.0-hessxx + nugget)*(1.0-hessyy + nugget) - hessxy*hessyx
+    nugget = 1e-6
+    jacdet = (1.0-hessxx + nugget)*(1.0-hessyy + nugget) - hessyx*hessyx
     tgt_dens = src_dens / np.abs(jacdet)
 
     interp = LinearNDInterpolator(list(zip(newx.ravel(), newy.ravel())), tgt_dens.ravel())
@@ -107,6 +142,81 @@ def push_forward2(dualVar, src_dens, X1, X2, weight=1.0):
 
     return tgt_dens_interp
 
+def push_forward3(dualVar, src_dens, X1, X2, weight=1.0):
+
+    ny,nx = dualVar.shape 
+    dy = 1.0/ny 
+    dx = 1.0/nx 
+
+    gradx, grady = gradient(dualVar/weight)
+
+    newx = X1 - gradx 
+    newy = X2 - grady
+
+    output = np.zeros(src_dens.shape)
+
+    for i in range(ny):
+        for j in range(nx):
+            
+            if(src_dens[i,j]>1e-15):
+                # Bilinear interpolation to get position of corners 
+                # bottom left corner
+                if((j==0)|(i==0)):
+                    x_bl = j*dx
+                    y_bl = i*dy
+                else:
+                    x_bl = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j-1] + newx[i-1,j-1])
+                    y_bl = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j-1] + newy[i-1,j-1])
+
+                # bottom right corner 
+                if((j==nx-1)|(i==0)):   
+                    x_br = (j+1)*dx 
+                    y_br = i*dy 
+                else:
+                    x_br = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j+1] + newx[i-1,j+1])
+                    y_br = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j+1] + newy[i-1,j+1])
+
+                # upper right corner
+                if((j==nx-1) | (i==ny-1)):
+                    x_ur = (j+1)*dx 
+                    y_ur = (i+1)*dy
+                else:
+                    x_ur = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j+1] + newx[i+1,j+1])
+                    y_ur = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j+1] + newy[i+1,j+1])
+                
+                # upper left corner 
+                if((j==0)|(i==ny-1)):
+                    x_ul = j*dx 
+                    y_ul = (i+1)*dy
+                else:
+                    x_ul = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j-1] + newx[i+1,j-1])
+                    y_ul = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j-1] + newy[i+1,j-1])
+                    
+                # Grid cells in the original uniform discretization that could part of the mapped grid cell 
+                corner_is = [ int(np.floor(y_bl/dy)), int(np.floor(y_br/dy)), int(np.floor(y_ur/dy)), int(np.floor(y_ul/dy))]
+                imin = np.min(corner_is)
+                imax = np.max(corner_is)
+                
+                corner_js = [ int(np.floor(x_bl/dx)), int(np.floor(x_br/dx)), int(np.floor(x_ur/dx)), int(np.floor(x_ul/dx))]
+                jmin = np.min(corner_js)
+                jmax = np.max(corner_js)
+                
+                tri1 = Polygon([(x_bl, y_bl), (x_ur, y_ur), (x_ul, y_ul)])
+                tri1_area = tri1.area 
+
+                tri2 = Polygon([(x_bl, y_bl), (x_br, y_br), (x_ur, y_ur)])
+                tri2_area = tri2.area 
+
+                for inew in range(imin,imax+1):
+                    for jnew in range(jmin,jmax+1):
+                        iadd = np.max([np.min([inew,ny-1]), 0])
+                        jadd = np.max([np.min([jnew,nx-1]), 0])
+                        
+                        cell = box(jnew*dx, inew*dy, (jnew+1)*dx, (inew+1)*dy)
+                        output[iadd,jadd] += 0.5*src_dens[i,j]*tri1.intersection(cell).area / tri1_area
+                        output[iadd,jadd] += 0.5*src_dens[i,j]*tri2.intersection(cell).area / tri2_area  
+
+    return output
     
 
 
