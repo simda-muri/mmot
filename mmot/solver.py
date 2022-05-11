@@ -6,12 +6,41 @@ import os
 import matplotlib.pyplot as plt 
 import matplotlib as mpl
 
+import itertools
+
 import IPython.display as idisp
 
 from .graph_utilities import * 
 from .bfm_utilities import *
 
 
+class MMOTResult:
+    """ Class storing results of MMOTSolver. 
+
+    Attributes
+    ----------
+    dual_vars : list of np.array
+        The optimal dual variables computed by MMOTSolver.Solve.
+    conv_code : int
+        The convergence reason.  Positive indicates success.  Negative indicates failure.  Details can be found in the MMOTSolver.Solve function.
+    line_its : list of int
+        Number of backtracking line search iterations required at each iteration of the optimization.
+    costs : list of float
+        Value of the dual objective function at each iteration of the optimizer.
+    grad_sq_norms : list of float 
+        Squared norm of the gradient at each iterations of the optimizer.
+    step_sizes : list of float 
+        Step size at the beginning of each iteration (e.g., at the beginning of the line search).
+        
+    """
+
+    def __init__(self, dual_vars, conv_code, line_its, costs, grad_sq_norms, step_sizes):
+        self.dual_vars = dual_vars 
+        self.conv_code = conv_code 
+        self.line_its = line_its 
+        self.costs = costs 
+        self.grad_sq_norms = grad_sq_norms
+        self.step_sizes = step_sizes
 
 class MMOTSolver:
   """ Solves the MMOT problem with weighted pairwise squared L2 cost.
@@ -128,15 +157,16 @@ class MMOTSolver:
     #     axs[i].imshow(f)
     # fig.suptitle('Dual Variables for Barycenter')
 
-    bary = np.zeros(measure_shape) 
-    for i,f in enumerate(dual_vars):
-        if(self._bary_weights[i]>1e-8):
-            #bary += push_forward(self._bf, f/self._bary_weights[i], self._measures[i], self._x, self._y)
-            bary += push_forward3(f/self._bary_weights[i], self._measures[i], self._x, self._y)
+    # bary = np.zeros(measure_shape) 
+    # for i,f in enumerate(dual_vars):
+    #     if(self._bary_weights[i]>1e-8):
+    #         bary += push_forward(self._bf, f/self._bary_weights[i], self._measures[i], self._x, self._y)
+    #         #bary += push_forward3(f/self._bary_weights[i], self._measures[i], self._x, self._y)
 
-    bary *= np.prod(measure_shape)/np.sum(bary)
+    # bary *= np.prod(measure_shape)/np.sum(bary)
 
     #bary = push_forward3(dual_vars[0]/self._bary_weights[0], self._measures[0], self._x, self._y)
+    bary = push_forward(self._bf, dual_vars[0]/self._bary_weights[0], self._measures[0], self._x, self._y)
         
     return bary 
 
@@ -357,3 +387,166 @@ class MMOTSolver:
     dual_vars[self.layers[-1][0]] = fsum
 
     return grad_squared_norm
+
+  def Solve(self, dual_vars=None, **kwargs):
+    """ Finds the dual variables that solve the MMOT problem.
+
+        | Convergence code | Description |
+         ----------------------------------
+        | -3    |  Failed line search. |
+        | -2    | Reach maximum iterations. |
+        | -1    | Generic failure. |
+        |  1    | Converged because of sufficient small gradient norm. | 
+        |  2    | Converged because of small change in objective. |
+        
+        Parameters
+        ----------
+        dual_vars : None or list of np.array
+            Initial guesses for the dual variables.  The length of the list should be the same
+            as `NumDual()` and each dual variable should have the same shape as the locations `x`
+            and `y` given to the constructor. If `dual_vars` is `None`, then the dual variables
+            will be initialized to zero.
+
+        Other Parameters
+        ----------------
+        max_its : int
+            The maximum number of iterations the optimizer is allowed to take.  Defaults to 1000.
+        step_size : float
+            The step size used in the gradient step of the optimizer.  Defaults to 1
+        ftol_abs : float 
+            The absolute tolerance on the change in objective function value.  If the change is smaller than this value, the optimizer will terminate.
+        ftol_rel : float 
+            The relative tolerance on the change in objective function value.  If the change is smaller than this value, the optimizer will terminate.
+        gtol_abs : float 
+            The absolute tolerance on the norm of the gradient. 
+        gtol_rel : float 
+            The relative tolerance on the norm of the gradient. 
+        max_line_ts : int 
+            Maximum number of backtracking steps in the line search.
+
+        Returns
+        --------
+        result : MMOTResult
+            An instance of the SolverResult class, which contains the optimal dual variables as well as convergence information.
+
+    """ 
+
+
+    if(dual_vars is None):
+        dual_vars = [np.zeros(self._x.shape) for i in range(self.NumDual())]
+    else:
+        assert(len(dual_vars)==self.NumDual())
+        for f in dual_vars:
+            assert(dual_vars.shape[0]==self._x.shape[0])
+            assert(dual_vars.shape[1]==self._y.shape[0])
+
+    max_line_its = 20
+
+    # Extract options from the kwargs
+    if('max_its' in kwargs):
+        max_its = kwargs['max_its']
+    else:
+        max_its = 1000
+
+    if('step_size' in kwargs):
+        step_size = kwargs['step_size']
+    else:
+        step_size = 1.0
+
+    if('ftol_abs' in kwargs):
+        ftol_abs = kwargs['ftol_abs']
+    else:
+        ftol_abs = 1e-11
+    
+    if('gtol_abs' in kwargs):
+        gtol_abs = kwargs['gtol_abs']
+    else:
+        gtol_abs = 1e-7
+
+    if('ftol_rel' in kwargs):
+        ftol_rel = kwargs['ftol_rel']
+    else:
+        ftol_rel = 1e-11
+    
+    if('gtol_rel' in kwargs):
+        gtol_rel = kwargs['gtol_rel']
+    else:
+        gtol_rel = 1e-7
+
+    if('max_line_its' in kwargs):
+        max_line_its = kwargs['max_line_its']
+    else:
+        max_line_its = 20
+
+    # Get ready to hold the result and convergence history
+    res = MMOTResult(None, -1, [], [], [], [])
+
+
+    root_nodes = np.arange(self.NumDual())
+    root_cycler = itertools.cycle(root_nodes)
+    old_cost = self.ComputeCost(dual_vars)
+    res.costs.append(old_cost)
+
+    alpha = 1.0
+    print('Iteration, StepSize,        Cost,        Error,  Line Its')
+    for it in range(max_its):
+
+        alpha = np.maximum(np.minimum(1.2*alpha,1.0),1e-4) 
+        res.step_sizes.append(alpha*step_size)
+
+        line_it = 0
+        while(line_it<max_line_its):
+            new_duals = np.copy(dual_vars)
+            newSqNorm = self.Step(next(root_cycler), new_duals, alpha*step_size)
+            if(line_it==0):
+                gradSqNorm = np.copy(newSqNorm)
+            new_cost = self.ComputeCost(new_duals)
+
+            if(new_cost>=old_cost+1e-4*step_size*alpha*gradSqNorm):
+                res.costs.append(new_cost) 
+                old_cost = np.copy(new_cost)
+                dual_vars = np.copy(new_duals)
+                gradSqNorm = np.copy(newSqNorm)
+                break
+            else:
+                alpha *=0.5
+                
+            line_it += 1
+
+        if(line_it>=max_line_its):
+            res.costs.append(new_cost)
+            old_cost = np.copy(new_cost)
+            dual_vars = np.copy(new_duals)
+            gradSqNorm = np.copy(newSqNorm)
+
+        res.grad_sq_norms.append(gradSqNorm)
+        res.line_its.append(line_it)
+
+        if(line_it>=max_line_its):
+            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+            print('Terminating due to failed line search.')
+            res.conv_code = -3
+            break 
+        
+        if((it%10)==0):
+            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+
+        # Check for convergence in cost
+        if(np.abs(res.costs[-1]-res.costs[-2])<ftol_abs):
+            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+            print('Terminating due to small change in objective.')
+            res.conv_code = 2
+            break
+
+        # Check for convergence via gradient 
+        if(gradSqNorm<gtol_abs):
+            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+            print('Terminating due to small gradient norm.')
+            res.conv_code = 1
+            break
+
+    if(it==max_its):
+        res.conv_code = -2
+
+    res.dual_vars = dual_vars
+    return res
