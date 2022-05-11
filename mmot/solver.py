@@ -228,11 +228,21 @@ class MMOTSolver:
     will be colored based on their layer, which corresponds to the number of 
     edges between the node and the root node.
     
-    ARGUMENTs:
-      root_node (None, int, or string) : If an integer, a directed tree flowing into this node 
-                                will be constructed and visualized.  If root_node=='original',
-                                the original unrolled graph will be visualized.  Otherwise the 
-                                unrolled, but undirected, tree will be visualized.
+    Parameters
+    ----------
+      root_node : None, int, or string
+        If an integer, a directed tree flowing into this node will be constructed and visualized.  
+        If root_node=='original', the original unrolled graph will be visualized.  Otherwise the 
+        unrolled, but undirected, tree will be visualized.
+
+    Other Parameters
+    ----------------
+    filename : string 
+        The name of an image file to create with the visualization.  
+    layout : string 
+        The name of the layout used by igraph to visualize the graph.  Defaults to 'reingold_tilford',
+        which is good for trees.   See the [igraph documentation](https://igraph.org/python/tutorial/latest/visualisation.html#graph-layouts)
+        for other options.
     """ 
     
     vert_labels = ['f{},m{}'.format(i,v) for i,v in enumerate(self._measure_map)]
@@ -269,8 +279,13 @@ class MMOTSolver:
     if('filename' in kwargs):
       files_to_create.append(kwargs['filename'])
 
+    if('layout' in kwargs):
+        layout_name = kwargs['layout']
+    else:
+        layout_name = 'reingold_tilford'
+
     for file in files_to_create:
-      layout = tree.layout(layout='reingold_tilford') # <- TODO: Make this an option
+      layout = tree.layout(layout=layout_name)
       ig.plot(tree, layout=layout, bbox=(400, 400), edge_width=4, margin=50,
               vertex_color=[list(scalarMap.to_rgba(node_to_layer[i])[0:3]) for i in range(num_verts)],
               vertex_label=vert_labels,
@@ -295,22 +310,6 @@ class MMOTSolver:
           cost += np.sum(dual_vars[dual_ind]*self._measures[meas_ind])/(n1*n2)
         return cost
 
-  def StepSizeUpdate(self, sigma, value, oldValue, gradSq):
-  
-    # Parameters for Armijo-Goldstein
-    scaleDown = 0.75
-    scaleUp   = 1/scaleDown
-    upper = 0.99
-    lower = 0.01
-    
-    # Armijo-Goldstein
-    diff = value - oldValue
-
-    if diff > gradSq * sigma * upper:
-        return sigma * scaleUp
-    elif diff < gradSq * sigma * lower:
-        return sigma * scaleDown
-    return sigma
     
   def Step(self, root_node, dual_vars, step_size):
       
@@ -424,6 +423,8 @@ class MMOTSolver:
             The relative tolerance on the norm of the gradient. 
         max_line_ts : int 
             Maximum number of backtracking steps in the line search.
+        root_nodes : string or list of int 
+            Nodes to cycle over when defining the root node in the directed graph.
 
         Returns
         --------
@@ -479,11 +480,16 @@ class MMOTSolver:
     else:
         max_line_its = 20
 
+    if('root_nodes' in kwargs):
+        root_nodes = kwargs['root_nodes']
+    else:
+        root_nodes = 'all'
+
     # Get ready to hold the result and convergence history
     res = MMOTResult(None, -1, [], [], [], [])
 
-
-    root_nodes = np.arange(self.NumDual())
+    if(root_nodes=='all'):
+        root_nodes = np.arange(self.NumDual())
     root_cycler = itertools.cycle(root_nodes)
     old_cost = self.ComputeCost(dual_vars)
     res.costs.append(old_cost)
@@ -491,40 +497,40 @@ class MMOTSolver:
     alpha = 1.0
     print('Iteration, StepSize,        Cost,        Error,  Line Its')
     for it in range(max_its):
-
-        alpha = np.maximum(np.minimum(1.2*alpha,1.0),1e-4) 
+        next_root = next(root_cycler)
+        
+        #alpha = np.maximum(np.minimum(1.2*alpha,1.0),1e-4) 
+        #alpha = 1.0
         res.step_sizes.append(alpha*step_size)
 
         line_it = 0
         while(line_it<max_line_its):
             new_duals = np.copy(dual_vars)
-            newSqNorm = self.Step(next(root_cycler), new_duals, alpha*step_size)
+            newSqNorm = self.Step(next_root, new_duals, alpha*step_size)
             if(line_it==0):
                 gradSqNorm = np.copy(newSqNorm)
+
             new_cost = self.ComputeCost(new_duals)
 
-            if(new_cost>=old_cost+1e-4*step_size*alpha*gradSqNorm):
+            if(new_cost>=old_cost+1e-8*step_size*alpha*gradSqNorm):
                 res.costs.append(new_cost) 
                 old_cost = np.copy(new_cost)
                 dual_vars = np.copy(new_duals)
                 gradSqNorm = np.copy(newSqNorm)
+
+                if(line_it==0):
+                    alpha = np.minimum(1.5*alpha,1.0) 
                 break
             else:
-                alpha *=0.5
+                alpha *= 0.5
                 
             line_it += 1
 
-        if(line_it>=max_line_its):
+        if((line_it>=max_line_its)&(len(root_nodes)==1)):
             print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
             print('Terminating due to failed line search.')
             res.conv_code = -3
             break 
-
-        # if(line_it>=max_line_its):
-        #     res.costs.append(new_cost)
-        #     old_cost = np.copy(new_cost)
-        #     dual_vars = np.copy(new_duals)
-        #     gradSqNorm = np.copy(newSqNorm)
 
         res.grad_sq_norms.append(gradSqNorm)
         res.line_its.append(line_it)
