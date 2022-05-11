@@ -142,81 +142,233 @@ def push_forward2(dualVar, src_dens, X1, X2, weight=1.0):
 
     return tgt_dens_interp
 
-def push_forward3(dualVar, src_dens, X1, X2, weight=1.0):
+# @jit
+# def clip_to_box(poly, bbox):
+#     """ Clips a polygon to a bounding box.  Returns the corners of the clipped polygon.
 
-    ny,nx = dualVar.shape 
-    dy = 1.0/ny 
-    dx = 1.0/nx 
+#     Parameters
+#     ----------
+#         poly :  list of list of float
+#             list of 2d points defining the polygon.   Points must be in CCW order.
+#         bbox: list of float
+#             xmin, xmax, ymin, ymax defining axis-aligned bounding box
 
-    gradx, grady = gradient(dualVar/weight)
+#     Returns
+#     ----------
+#         list of list of float  
+#             Corner points defining the clipped polygon.
+#     """
 
-    newx = X1 - gradx 
-    newy = X2 - grady
+#     # Clip based on left edge of box 
+#     in_poly = np.copy(poly)
+#     out_poly = []
 
-    output = np.zeros(src_dens.shape)
+#     for i in range(len(in_poly)):
+#         edge_start = in_poly[i-1]
+#         edge_end = in_poly[i]
+        
+#         if(edge_start[0]>=bbox[0]):
+#             if(edge_end[0]>=bbox[0]):
+#                 # Entire edge is entirely on the correct side of the halfplane
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge starts in halfplane, but finishes outside 
+#                 # bbox = edge_start + w*(edge_end-edge_start)
+#                 w = (bbox[0]-edge_start[0])/(edge_end[0]-edge_start[0])
+#                 intersection = [bbox[0], edge_start[1] + w*(edge_end[1]-edge_start[1])]
+#                 out_poly.append(intersection)
+#         else:
+#             if(edge_end[0]>=bbox[0]):
+#                 # Edge starts outside halfplane, but finished inside
+#                 w = (bbox[0]-edge_start[0])/(edge_end[0]-edge_start[0])
+#                 intersection = [bbox[0], edge_start[1] + w*(edge_end[1]-edge_start[1])]
+#                 out_poly.append(intersection)
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge is entirely outside halfplane
+#                 pass
+    
+#     # Clip based on right edge of box 
+#     in_poly = np.copy(out_poly)
+#     out_poly = []
 
-    for i in range(ny):
-        for j in range(nx):
+#     for i in range(len(in_poly)):
+#         edge_start = in_poly[i-1]
+#         edge_end = in_poly[i]
+        
+#         if(edge_start[0]<=bbox[1]):
+#             if(edge_end[0]<=bbox[1]):
+#                 # Entire edge is entirely on the correct side of the halfplane
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge starts in halfplane, but finishes outside 
+#                 # bbox = edge_start + w*(edge_end-edge_start)
+#                 w = (bbox[1]-edge_start[0])/(edge_end[0]-edge_start[0])
+#                 intersection = [bbox[1], edge_start[1] + w*(edge_end[1]-edge_start[1])]
+#                 out_poly.append(intersection)
+#         else:
+#             if(edge_end[0]<=bbox[1]):
+#                 # Edge starts outside halfplane, but finished inside
+#                 w = (bbox[1]-edge_start[0])/(edge_end[0]-edge_start[0])
+#                 intersection = [bbox[1], edge_start[1] + w*(edge_end[1]-edge_start[1])]
+#                 out_poly.append(intersection)
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge is entirely outside halfplane
+#                 pass
+    
+#     # Clip based on bottom edge of box 
+#     in_poly = np.copy(out_poly)
+#     out_poly = []
+
+#     for i in range(len(in_poly)):
+#         edge_start = in_poly[i-1]
+#         edge_end = in_poly[i]
+        
+#         if(edge_start[1]>=bbox[2]):
+#             if(edge_end[1]>=bbox[2]):
+#                 # Entire edge is entirely on the correct side of the halfplane
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge starts in halfplane, but finishes outside 
+#                 # bbox = edge_start + w*(edge_end-edge_start)
+#                 w = (bbox[2]-edge_start[1])/(edge_end[1]-edge_start[1])
+#                 intersection = [edge_start[0] + w*(edge_end[0]-edge_start[0]), bbox[2]]
+#                 out_poly.append(intersection)
+#         else:
+#             if(edge_end[1]>=bbox[2]):
+#                 # Edge starts outside halfplane, but finished inside
+#                 w = (bbox[2]-edge_start[1])/(edge_end[1]-edge_start[1])
+#                 intersection = [edge_start[0] + w*(edge_end[0]-edge_start[0]), bbox[2]]
+#                 out_poly.append(intersection)
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge is entirely outside halfplane
+#                 pass
+
+#     # Clip based on top edge of box 
+#     in_poly = np.copy(out_poly)
+#     out_poly = []
+
+#     for i in range(len(in_poly)):
+#         edge_start = in_poly[i-1]
+#         edge_end = in_poly[i]
+        
+#         if(edge_start[1]<=bbox[3]):
+#             if(edge_end[1]<=bbox[3]):
+#                 # Entire edge is entirely on the correct side of the halfplane
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge starts in halfplane, but finishes outside 
+#                 # bbox = edge_start + w*(edge_end-edge_start)
+#                 w = (bbox[3]-edge_start[1])/(edge_end[1]-edge_start[1])
+#                 intersection = [edge_start[0] + w*(edge_end[0]-edge_start[0]), bbox[3]]
+#                 out_poly.append(intersection)
+#         else:
+#             if(edge_end[1]<=bbox[3]):
+#                 # Edge starts outside halfplane, but finished inside
+#                 w = (bbox[3]-edge_start[1])/(edge_end[1]-edge_start[1])
+#                 intersection = [edge_start[0] + w*(edge_end[0]-edge_start[0]), bbox[3]]
+#                 out_poly.append(intersection)
+#                 out_poly.append(edge_end)
+#             else:
+#                 # Edge is entirely outside halfplane
+#                 pass
+
+#     return out_poly 
+
+# @jit
+# def polygon_area(poly):
+#     """ Uses the "shoelace" algorithm to compute the area of a polygon.
+
+#     Parameters
+#     ----------
+#         poly :  list of list of float
+#             list of 2d points defining the polygon.   Points must be in CCW order.
+
+#     Retruns
+#     ---------
+#         float
+#             The are aof the polygon.
+#     """
+
+# def push_forward3(dualVar, src_dens, X1, X2, weight=1.0):
+
+#     ny,nx = dualVar.shape 
+#     dy = 1.0/ny 
+#     dx = 1.0/nx 
+
+#     gradx, grady = gradient(dualVar/weight)
+
+#     newx = X1 - gradx 
+#     newy = X2 - grady
+
+#     output = np.zeros(src_dens.shape)
+
+#     for i in range(ny):
+#         for j in range(nx):
             
-            if(src_dens[i,j]>1e-15):
-                # Bilinear interpolation to get position of corners 
-                # bottom left corner
-                if((j==0)|(i==0)):
-                    x_bl = j*dx
-                    y_bl = i*dy
-                else:
-                    x_bl = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j-1] + newx[i-1,j-1])
-                    y_bl = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j-1] + newy[i-1,j-1])
+#             if(src_dens[i,j]>1e-15):
+#                 # Bilinear interpolation to get position of corners 
+#                 # bottom left corner
+#                 if((j==0)|(i==0)):
+#                     x_bl = j*dx
+#                     y_bl = i*dy
+#                 else:
+#                     x_bl = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j-1] + newx[i-1,j-1])
+#                     y_bl = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j-1] + newy[i-1,j-1])
 
-                # bottom right corner 
-                if((j==nx-1)|(i==0)):   
-                    x_br = (j+1)*dx 
-                    y_br = i*dy 
-                else:
-                    x_br = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j+1] + newx[i-1,j+1])
-                    y_br = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j+1] + newy[i-1,j+1])
+#                 # bottom right corner 
+#                 if((j==nx-1)|(i==0)):   
+#                     x_br = (j+1)*dx 
+#                     y_br = i*dy 
+#                 else:
+#                     x_br = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j+1] + newx[i-1,j+1])
+#                     y_br = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j+1] + newy[i-1,j+1])
 
-                # upper right corner
-                if((j==nx-1) | (i==ny-1)):
-                    x_ur = (j+1)*dx 
-                    y_ur = (i+1)*dy
-                else:
-                    x_ur = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j+1] + newx[i+1,j+1])
-                    y_ur = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j+1] + newy[i+1,j+1])
+#                 # upper right corner
+#                 if((j==nx-1) | (i==ny-1)):
+#                     x_ur = (j+1)*dx 
+#                     y_ur = (i+1)*dy
+#                 else:
+#                     x_ur = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j+1] + newx[i+1,j+1])
+#                     y_ur = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j+1] + newy[i+1,j+1])
                 
-                # upper left corner 
-                if((j==0)|(i==ny-1)):
-                    x_ul = j*dx 
-                    y_ul = (i+1)*dy
-                else:
-                    x_ul = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j-1] + newx[i+1,j-1])
-                    y_ul = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j-1] + newy[i+1,j-1])
+#                 # upper left corner 
+#                 if((j==0)|(i==ny-1)):
+#                     x_ul = j*dx 
+#                     y_ul = (i+1)*dy
+#                 else:
+#                     x_ul = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j-1] + newx[i+1,j-1])
+#                     y_ul = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j-1] + newy[i+1,j-1])
                     
-                # Grid cells in the original uniform discretization that could part of the mapped grid cell 
-                corner_is = [ int(np.floor(y_bl/dy)), int(np.floor(y_br/dy)), int(np.floor(y_ur/dy)), int(np.floor(y_ul/dy))]
-                imin = np.min(corner_is)
-                imax = np.max(corner_is)
+#                 # Grid cells in the original uniform discretization that could part of the mapped grid cell 
+#                 corner_is = [ int(np.floor(y_bl/dy)), int(np.floor(y_br/dy)), int(np.floor(y_ur/dy)), int(np.floor(y_ul/dy))]
+#                 imin = np.min(corner_is)
+#                 imax = np.max(corner_is)
                 
-                corner_js = [ int(np.floor(x_bl/dx)), int(np.floor(x_br/dx)), int(np.floor(x_ur/dx)), int(np.floor(x_ul/dx))]
-                jmin = np.min(corner_js)
-                jmax = np.max(corner_js)
+#                 corner_js = [ int(np.floor(x_bl/dx)), int(np.floor(x_br/dx)), int(np.floor(x_ur/dx)), int(np.floor(x_ul/dx))]
+#                 jmin = np.min(corner_js)
+#                 jmax = np.max(corner_js)
                 
-                tri1 = Polygon([(x_bl, y_bl), (x_ur, y_ur), (x_ul, y_ul)])
-                tri1_area = tri1.area 
+#                 tri1 = Polygon([(x_bl, y_bl), (x_ur, y_ur), (x_ul, y_ul)])
+#                 tri1_area = tri1.area 
 
-                tri2 = Polygon([(x_bl, y_bl), (x_br, y_br), (x_ur, y_ur)])
-                tri2_area = tri2.area 
+#                 tri2 = Polygon([(x_bl, y_bl), (x_br, y_br), (x_ur, y_ur)])
+#                 tri2_area = tri2.area 
 
-                for inew in range(imin,imax+1):
-                    for jnew in range(jmin,jmax+1):
-                        iadd = np.max([np.min([inew,ny-1]), 0])
-                        jadd = np.max([np.min([jnew,nx-1]), 0])
+#                 for inew in range(imin,imax+1):
+#                     for jnew in range(jmin,jmax+1):
+#                         iadd = np.max([np.min([inew,ny-1]), 0])
+#                         jadd = np.max([np.min([jnew,nx-1]), 0])
                         
-                        cell = box(jnew*dx, inew*dy, (jnew+1)*dx, (inew+1)*dy)
-                        output[iadd,jadd] += 0.5*src_dens[i,j]*tri1.intersection(cell).area / tri1_area
-                        output[iadd,jadd] += 0.5*src_dens[i,j]*tri2.intersection(cell).area / tri2_area  
+#                         cell = box(jnew*dx, inew*dy, (jnew+1)*dx, (inew+1)*dy)
+#                         if((tri1_area>1e-10)&(tri2_area>1e-10)):
+#                             output[iadd,jadd] += 0.5*src_dens[i,j]*tri1.intersection(cell).area / tri1_area
+#                             output[iadd,jadd] += 0.5*src_dens[i,j]*tri2.intersection(cell).area / tri2_area  
 
-    return output
+#     output *= np.prod(output.shape) / np.sum(output)
+#     return output
     
 
 

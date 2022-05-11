@@ -358,6 +358,7 @@ class MMOTSolver:
             w = self._edge_weights[self._measure_map[vert_ind],self._measure_map[next_vert_ind]]
             smu = push_forward(self._bf, self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
             #smu = push_forward2(self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
+            #smu = push_forward3(self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
             
             grad_squared_norm += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
        
@@ -514,19 +515,20 @@ class MMOTSolver:
             line_it += 1
 
         if(line_it>=max_line_its):
-            res.costs.append(new_cost)
-            old_cost = np.copy(new_cost)
-            dual_vars = np.copy(new_duals)
-            gradSqNorm = np.copy(newSqNorm)
-
-        res.grad_sq_norms.append(gradSqNorm)
-        res.line_its.append(line_it)
-
-        if(line_it>=max_line_its):
             print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
             print('Terminating due to failed line search.')
             res.conv_code = -3
             break 
+
+        # if(line_it>=max_line_its):
+        #     res.costs.append(new_cost)
+        #     old_cost = np.copy(new_cost)
+        #     dual_vars = np.copy(new_duals)
+        #     gradSqNorm = np.copy(newSqNorm)
+
+        res.grad_sq_norms.append(gradSqNorm)
+        res.line_its.append(line_it)
+
         
         if((it%10)==0):
             print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
