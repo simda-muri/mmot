@@ -1,18 +1,22 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Barycenter of MNIST Digits &#8212; MMOT2D 0.1 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -21,13 +25,14 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -36,32 +41,40 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Push Forward Comparison" href="PushForwardTest.html" />
     <link rel="prev" title="Simple Barycenter Computation" href="Barycenter.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
-<a class="navbar-brand" href="../index.html">
-<p class="title">MMOT2D</p>
-</a>
+  
 
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">MMOT2D 0.1 documentation</p>
+  
+</a>
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -121,6 +134,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
       </ul>
       </div>
@@ -131,13 +152,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -145,19 +166,20 @@
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -204,23 +226,21 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   
 <style>
@@ -437,6 +457,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -445,10 +466,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -460,20 +485,23 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <section id="Barycenter-of-MNIST-Digits">
-<h1>Barycenter of MNIST Digits<a class="headerlink" href="#Barycenter-of-MNIST-Digits" title="Permalink to this headline">#</a></h1>
+<h1>Barycenter of MNIST Digits<a class="headerlink" href="#Barycenter-of-MNIST-Digits" title="Permalink to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">from</span> <span class="nn">mmot</span> <span class="kn">import</span> <span class="n">MMOTSolver</span>
@@ -485,7 +513,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <section id="Download-and-open-the-MNIST-dataset">
-<h2>Download and open the MNIST dataset<a class="headerlink" href="#Download-and-open-the-MNIST-dataset" title="Permalink to this headline">#</a></h2>
+<h2>Download and open the MNIST dataset<a class="headerlink" href="#Download-and-open-the-MNIST-dataset" title="Permalink to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -514,7 +542,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <section id="Plot-a-few-samples-of-the-digit-we’re-interested-in">
-<h3>Plot a few samples of the digit we’re interested in<a class="headerlink" href="#Plot-a-few-samples-of-the-digit-we’re-interested-in" title="Permalink to this headline">#</a></h3>
+<h3>Plot a few samples of the digit we’re interested in<a class="headerlink" href="#Plot-a-few-samples-of-the-digit-we’re-interested-in" title="Permalink to this heading">#</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -538,7 +566,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Extract-digits-with-similar-total-measure">
-<h3>Extract digits with similar total measure<a class="headerlink" href="#Extract-digits-with-similar-total-measure" title="Permalink to this headline">#</a></h3>
+<h3>Extract digits with similar total measure<a class="headerlink" href="#Extract-digits-with-similar-total-measure" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -569,8 +597,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Define-the-edge-list-for-the-barycenter-problem">
-<h3>Define the edge list for the barycenter problem<a class="headerlink" href="#Define-the-edge-list-for-the-barycenter-problem" title="Permalink to this headline">#</a></h3>
-<div class="nbinput docutils container">
+<h3>Define the edge list for the barycenter problem<a class="headerlink" href="#Define-the-edge-list-for-the-barycenter-problem" title="Permalink to this heading">#</a></h3>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
@@ -579,137 +607,657 @@ div.rendered_html tbody tr:hover {
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">num_digits</span><span class="p">):</span>
         <span class="n">edge_list</span> <span class="o">+=</span> <span class="p">[[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]]</span>
 
-
-<span class="n">prob</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">)</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_digits</span><span class="p">)</span><span class="o">/</span><span class="n">num_digits</span>
+<span class="n">prob</span> <span class="o">=</span> <span class="n">MMOTSolver</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">edge_list</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">unroll_node</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-0
-</pre></div></div>
-</div>
 </section>
 <section id="Solve-the-problem">
-<h3>Solve the problem<a class="headerlink" href="#Solve-the-problem" title="Permalink to this headline">#</a></h3>
+<h3>Solve the problem<a class="headerlink" href="#Solve-the-problem" title="Permalink to this heading">#</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dual_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())]</span>
-
-<span class="n">num_its</span> <span class="o">=</span> <span class="mi">10000</span>
-<span class="n">step_size</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">ftol</span> <span class="o">=</span> <span class="mf">1e-9</span>
-<span class="n">gtol</span> <span class="o">=</span> <span class="mf">1e-3</span>
-
-<span class="n">root_node</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">costs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_its</span><span class="p">)</span>
-
-<span class="n">root_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">prob</span><span class="o">.</span><span class="n">NumDual</span><span class="p">())</span>
-<span class="n">root_cycler</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">root_nodes</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration, StepSize,    Cost,   Error&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_its</span><span class="p">):</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Step</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">root_cycler</span><span class="p">),</span> <span class="n">dual_vars</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
-
-    <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">ComputeCost</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">)</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">step_size</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">StepSizeUpdate</span><span class="p">(</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
-
-    <span class="k">if</span><span class="p">((</span><span class="n">i</span><span class="o">%</span><span class="k">10</span>)==0):
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:9d}</span><span class="s1">,   </span><span class="si">{:0.4f}</span><span class="s1">,  </span><span class="si">{:0.4f}</span><span class="s1">,   </span><span class="si">{:0.5f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">step_size</span><span class="p">,</span> <span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">error</span><span class="p">))</span>
-
-    <span class="c1"># Check for convergence in cost</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">&lt;</span><span class="n">ftol</span><span class="p">):</span>
-        <span class="k">break</span>
-
-    <span class="c1"># Check for convergence via gradient</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="o">&lt;</span><span class="n">gtol</span><span class="p">):</span>
-        <span class="k">break</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">costs</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="n">max_its</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">ftol_abs</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">gtol_abs</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<br/></pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Iteration, StepSize,    Cost,   Error
-        0,   0.2000,  0.0184,   0.64792
-       10,   0.1327,  0.1448,   0.10641
-       20,   0.0794,  0.1578,   0.05765
-       30,   0.0476,  0.1637,   0.04896
-       40,   0.0285,  0.1711,   0.05001
-       50,   0.0350,  0.1829,   0.04006
-       60,   0.0209,  0.1861,   0.03688
-       70,   0.0154,  0.1902,   0.03523
-       80,   0.0125,  0.1935,   0.03595
-       90,   0.0102,  0.1962,   0.03717
-      100,   0.0075,  0.1973,   0.03561
-      110,   0.0055,  0.1984,   0.03445
-      120,   0.0045,  0.1995,   0.03423
-      130,   0.0033,  0.2003,   0.03498
-      140,   0.0030,  0.2009,   0.03484
-      150,   0.0018,  0.2011,   0.03470
-      160,   0.0013,  0.2014,   0.03481
-      170,   0.0011,  0.2017,   0.03435
-      180,   0.0010,  0.2019,   0.03471
-      190,   0.0007,  0.2019,   0.03438
-      200,   0.0004,  0.2020,   0.03507
-      210,   0.0004,  0.2021,   0.03431
-      220,   0.0003,  0.2022,   0.03416
-      230,   0.0003,  0.2022,   0.03397
-      240,   0.0002,  0.2022,   0.03516
-      250,   0.0001,  0.2023,   0.03512
-      260,   0.0001,  0.2023,   0.03472
-      270,   0.0001,  0.2023,   0.03407
-      280,   0.0001,  0.2023,   0.03424
-      290,   0.0000,  0.2023,   0.03458
-      300,   0.0000,  0.2023,   0.03442
-      310,   0.0000,  0.2023,   0.03465
-      320,   0.0000,  0.2023,   0.03435
-      330,   0.0000,  0.2023,   0.03474
-      340,   0.0000,  0.2023,   0.03396
-      350,   0.0000,  0.2023,   0.03427
-      360,   0.0000,  0.2023,   0.03450
-      370,   0.0000,  0.2024,   0.03431
-      380,   0.0000,  0.2024,   0.03454
-      390,   0.0000,  0.2024,   0.03488
-      400,   0.0000,  0.2024,   0.03431
-      410,   0.0000,  0.2024,   0.03456
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/examples_MNISTBarycenter_12_1.png" src="../_images/examples_MNISTBarycenter_12_1.png" />
+<div class="highlight"><pre>
+Iteration, StepSize,        Cost,        Error,  Line Its
+next_root 0 =  0
+next_root 1 =  0
+next_root 2 =  0
+next_root 3 =  0
+next_root 4 =  0
+next_root 5 =  0
+next_root 6 =  0
+next_root 7 =  0
+next_root 8 =  0
+        0,   0.0008,  1.2998e-04,   1.0349e+00,         8
+next_root 0 =  1
+next_root 0 =  2
+next_root 0 =  3
+next_root 0 =  4
+next_root 0 =  5
+next_root 0 =  6
+next_root 0 =  7
+next_root 0 =  8
+next_root 0 =  9
+next_root 1 =  9
+next_root 0 =  10
+next_root 1 =  10
+       10,   0.0012,  1.2499e-03,   1.5150e-01,         1
+next_root 0 =  11
+next_root 0 =  12
+next_root 0 =  13
+next_root 0 =  14
+next_root 0 =  15
+next_root 0 =  16
+next_root 0 =  17
+next_root 1 =  17
+next_root 2 =  17
+next_root 0 =  18
+next_root 0 =  19
+next_root 0 =  20
+next_root 1 =  20
+       20,   0.0009,  1.4826e-03,   4.6731e-02,         1
+next_root 0 =  21
+next_root 0 =  22
+next_root 0 =  23
+next_root 1 =  23
+next_root 0 =  24
+next_root 0 =  25
+next_root 0 =  26
+next_root 1 =  26
+next_root 0 =  27
+next_root 0 =  28
+next_root 0 =  29
+next_root 1 =  29
+next_root 0 =  30
+       30,   0.0007,  1.5566e-03,   4.0157e-02,         0
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+next_root 0 =  33
+next_root 0 =  34
+next_root 0 =  35
+next_root 0 =  36
+next_root 1 =  36
+next_root 0 =  37
+next_root 0 =  38
+next_root 0 =  39
+next_root 1 =  39
+next_root 0 =  40
+       40,   0.0006,  1.6275e-03,   4.0973e-02,         0
+next_root 0 =  41
+next_root 0 =  42
+next_root 1 =  42
+next_root 0 =  43
+next_root 0 =  44
+next_root 0 =  45
+next_root 0 =  0
+next_root 0 =  1
+next_root 0 =  2
+next_root 0 =  3
+next_root 1 =  3
+next_root 0 =  4
+       50,   0.0009,  1.7358e-03,   3.2187e-02,         0
+next_root 0 =  5
+next_root 1 =  5
+next_root 0 =  6
+next_root 0 =  7
+next_root 1 =  7
+next_root 0 =  8
+next_root 0 =  9
+next_root 0 =  10
+next_root 0 =  11
+next_root 1 =  11
+next_root 0 =  12
+next_root 0 =  13
+next_root 1 =  13
+next_root 0 =  14
+       60,   0.0003,  1.7963e-03,   2.8782e-02,         0
+next_root 0 =  15
+next_root 0 =  16
+next_root 0 =  17
+next_root 0 =  18
+next_root 0 =  19
+next_root 1 =  19
+next_root 0 =  20
+next_root 0 =  21
+next_root 0 =  22
+next_root 1 =  22
+next_root 0 =  23
+next_root 0 =  24
+       70,   0.0005,  1.8271e-03,   2.7783e-02,         0
+next_root 0 =  25
+next_root 0 =  26
+next_root 1 =  26
+next_root 0 =  27
+next_root 0 =  28
+next_root 0 =  29
+next_root 1 =  29
+next_root 0 =  30
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+next_root 0 =  33
+next_root 1 =  33
+next_root 0 =  34
+       80,   0.0002,  1.8805e-03,   2.8257e-02,         0
+next_root 0 =  35
+next_root 0 =  36
+next_root 0 =  37
+next_root 0 =  38
+next_root 1 =  38
+next_root 0 =  39
+next_root 0 =  40
+next_root 0 =  41
+next_root 0 =  42
+next_root 1 =  42
+next_root 0 =  43
+next_root 0 =  44
+       90,   0.0003,  1.9226e-03,   2.9543e-02,         0
+next_root 0 =  45
+next_root 0 =  0
+next_root 1 =  0
+next_root 0 =  1
+next_root 1 =  1
+next_root 0 =  2
+next_root 0 =  3
+next_root 0 =  4
+next_root 0 =  5
+next_root 1 =  5
+next_root 0 =  6
+next_root 0 =  7
+next_root 1 =  7
+next_root 0 =  8
+      100,   0.0001,  1.9420e-03,   2.8192e-02,         0
+next_root 0 =  9
+next_root 0 =  10
+next_root 0 =  11
+next_root 0 =  12
+next_root 0 =  13
+next_root 1 =  13
+next_root 0 =  14
+next_root 0 =  15
+next_root 0 =  16
+next_root 0 =  17
+next_root 1 =  17
+next_root 0 =  18
+      110,   0.0002,  1.9607e-03,   2.6876e-02,         0
+next_root 0 =  19
+next_root 0 =  20
+next_root 1 =  20
+next_root 0 =  21
+next_root 0 =  22
+next_root 0 =  23
+next_root 0 =  24
+next_root 1 =  24
+next_root 0 =  25
+next_root 0 =  26
+next_root 0 =  27
+next_root 0 =  28
+next_root 1 =  28
+      120,   0.0001,  1.9792e-03,   2.6153e-02,         1
+next_root 0 =  29
+next_root 0 =  30
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+next_root 0 =  33
+next_root 1 =  33
+next_root 0 =  34
+next_root 0 =  35
+next_root 0 =  36
+next_root 0 =  37
+next_root 0 =  38
+next_root 1 =  38
+      130,   0.0001,  1.9903e-03,   2.7401e-02,         1
+next_root 0 =  39
+next_root 0 =  40
+next_root 0 =  41
+next_root 0 =  42
+next_root 1 =  42
+next_root 0 =  43
+next_root 0 =  44
+next_root 0 =  45
+next_root 0 =  0
+next_root 1 =  0
+next_root 0 =  1
+next_root 1 =  1
+next_root 0 =  2
+next_root 1 =  2
+      140,   0.0000,  2.0004e-03,   2.7720e-02,         1
+next_root 0 =  3
+next_root 0 =  4
+next_root 0 =  5
+next_root 0 =  6
+next_root 0 =  7
+next_root 1 =  7
+next_root 0 =  8
+next_root 0 =  9
+next_root 0 =  10
+next_root 0 =  11
+next_root 1 =  11
+next_root 0 =  12
+      150,   0.0001,  2.0087e-03,   2.7586e-02,         0
+next_root 0 =  13
+next_root 0 =  14
+next_root 0 =  15
+next_root 1 =  15
+next_root 0 =  16
+next_root 0 =  17
+next_root 0 =  18
+next_root 0 =  19
+next_root 0 =  20
+next_root 1 =  20
+next_root 0 =  21
+next_root 0 =  22
+      160,   0.0001,  2.0155e-03,   2.7085e-02,         0
+next_root 0 =  23
+next_root 0 =  24
+next_root 1 =  24
+next_root 0 =  25
+next_root 0 =  26
+next_root 0 =  27
+next_root 0 =  28
+next_root 1 =  28
+next_root 0 =  29
+next_root 0 =  30
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+      170,   0.0001,  2.0205e-03,   2.7040e-02,         1
+next_root 0 =  33
+next_root 1 =  33
+next_root 0 =  34
+next_root 0 =  35
+next_root 0 =  36
+next_root 0 =  37
+next_root 1 =  37
+next_root 0 =  38
+next_root 0 =  39
+next_root 0 =  40
+next_root 0 =  41
+next_root 0 =  42
+next_root 1 =  42
+      180,   0.0001,  2.0259e-03,   2.7703e-02,         1
+next_root 0 =  43
+next_root 0 =  44
+next_root 0 =  45
+next_root 0 =  0
+next_root 1 =  0
+next_root 0 =  1
+next_root 1 =  1
+next_root 0 =  2
+next_root 1 =  2
+next_root 0 =  3
+next_root 0 =  4
+next_root 0 =  5
+next_root 1 =  5
+next_root 0 =  6
+      190,   0.0000,  2.0300e-03,   2.7548e-02,         0
+next_root 0 =  7
+next_root 0 =  8
+next_root 0 =  9
+next_root 0 =  10
+next_root 0 =  11
+next_root 1 =  11
+next_root 0 =  12
+next_root 0 =  13
+next_root 1 =  13
+next_root 0 =  14
+next_root 0 =  15
+next_root 0 =  16
+      200,   0.0000,  2.0350e-03,   2.7808e-02,         0
+next_root 0 =  17
+next_root 0 =  18
+next_root 0 =  19
+next_root 1 =  19
+next_root 0 =  20
+next_root 0 =  21
+next_root 0 =  22
+next_root 0 =  23
+next_root 0 =  24
+next_root 1 =  24
+next_root 0 =  25
+next_root 0 =  26
+next_root 1 =  26
+      210,   0.0000,  2.0386e-03,   2.7053e-02,         1
+next_root 0 =  27
+next_root 0 =  28
+next_root 0 =  29
+next_root 1 =  29
+next_root 0 =  30
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+next_root 0 =  33
+next_root 0 =  34
+next_root 0 =  35
+next_root 0 =  36
+      220,   0.0000,  2.0425e-03,   2.7091e-02,         0
+next_root 0 =  37
+next_root 1 =  37
+next_root 0 =  38
+next_root 0 =  39
+next_root 0 =  40
+next_root 1 =  40
+next_root 0 =  41
+next_root 0 =  42
+next_root 0 =  43
+next_root 0 =  44
+next_root 0 =  45
+next_root 0 =  0
+next_root 1 =  0
+      230,   0.0000,  2.0447e-03,   2.7168e-02,         1
+next_root 0 =  1
+next_root 1 =  1
+next_root 2 =  1
+next_root 0 =  2
+next_root 1 =  2
+next_root 0 =  3
+next_root 1 =  3
+next_root 0 =  4
+next_root 0 =  5
+next_root 1 =  5
+next_root 0 =  6
+next_root 0 =  7
+next_root 1 =  7
+next_root 0 =  8
+next_root 0 =  9
+next_root 0 =  10
+      240,   0.0000,  2.0456e-03,   2.7954e-02,         0
+next_root 0 =  11
+next_root 1 =  11
+next_root 0 =  12
+next_root 0 =  13
+next_root 1 =  13
+next_root 0 =  14
+next_root 0 =  15
+next_root 1 =  15
+next_root 0 =  16
+next_root 0 =  17
+next_root 0 =  18
+next_root 0 =  19
+next_root 1 =  19
+next_root 0 =  20
+      250,   0.0000,  2.0472e-03,   2.7679e-02,         0
+next_root 0 =  21
+next_root 0 =  22
+next_root 0 =  23
+next_root 1 =  23
+next_root 0 =  24
+next_root 1 =  24
+next_root 0 =  25
+next_root 0 =  26
+next_root 0 =  27
+next_root 0 =  28
+next_root 1 =  28
+next_root 0 =  29
+next_root 0 =  30
+      260,   0.0000,  2.0484e-03,   2.7547e-02,         0
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+next_root 0 =  33
+next_root 1 =  33
+next_root 0 =  34
+next_root 0 =  35
+next_root 1 =  35
+next_root 0 =  36
+next_root 0 =  37
+next_root 0 =  38
+next_root 1 =  38
+next_root 0 =  39
+next_root 0 =  40
+      270,   0.0000,  2.0494e-03,   2.7256e-02,         0
+next_root 0 =  41
+next_root 0 =  42
+next_root 1 =  42
+next_root 0 =  43
+next_root 0 =  44
+next_root 0 =  45
+next_root 0 =  0
+next_root 1 =  0
+next_root 0 =  1
+next_root 1 =  1
+next_root 2 =  1
+next_root 0 =  2
+next_root 1 =  2
+next_root 2 =  2
+next_root 0 =  3
+next_root 1 =  3
+next_root 0 =  4
+next_root 1 =  4
+      280,   0.0000,  2.0503e-03,   2.7424e-02,         1
+next_root 0 =  5
+next_root 1 =  5
+next_root 2 =  5
+next_root 0 =  6
+next_root 1 =  6
+next_root 0 =  7
+next_root 1 =  7
+next_root 2 =  7
+next_root 0 =  8
+next_root 1 =  8
+next_root 0 =  9
+next_root 1 =  9
+next_root 0 =  10
+next_root 1 =  10
+next_root 0 =  11
+next_root 1 =  11
+next_root 0 =  12
+next_root 1 =  12
+next_root 0 =  13
+next_root 1 =  13
+next_root 0 =  14
+next_root 1 =  14
+      290,   0.0000,  2.0511e-03,   2.7508e-02,         1
+next_root 0 =  15
+next_root 1 =  15
+next_root 0 =  16
+next_root 1 =  16
+next_root 0 =  17
+next_root 1 =  17
+next_root 0 =  18
+next_root 1 =  18
+next_root 0 =  19
+next_root 1 =  19
+next_root 0 =  20
+next_root 1 =  20
+next_root 0 =  21
+next_root 1 =  21
+next_root 0 =  22
+next_root 1 =  22
+next_root 0 =  23
+next_root 0 =  24
+next_root 1 =  24
+      300,   0.0000,  2.0520e-03,   2.7258e-02,         1
+next_root 0 =  25
+next_root 0 =  26
+next_root 1 =  26
+next_root 0 =  27
+next_root 1 =  27
+next_root 0 =  28
+next_root 1 =  28
+next_root 0 =  29
+next_root 1 =  29
+next_root 0 =  30
+next_root 1 =  30
+next_root 0 =  31
+next_root 0 =  32
+next_root 1 =  32
+next_root 2 =  32
+next_root 0 =  33
+next_root 1 =  33
+next_root 2 =  33
+next_root 0 =  34
+next_root 1 =  34
+      310,   0.0000,  2.0527e-03,   2.7769e-02,         1
+next_root 0 =  35
+next_root 1 =  35
+next_root 0 =  36
+next_root 1 =  36
+next_root 0 =  37
+next_root 1 =  37
+next_root 0 =  38
+next_root 1 =  38
+next_root 0 =  39
+next_root 1 =  39
+next_root 0 =  40
+next_root 1 =  40
+next_root 0 =  41
+next_root 1 =  41
+next_root 0 =  42
+next_root 1 =  42
+next_root 0 =  43
+next_root 1 =  43
+next_root 0 =  44
+next_root 1 =  44
+      320,   0.0000,  2.0535e-03,   2.7419e-02,         1
+next_root 0 =  45
+next_root 1 =  45
+next_root 0 =  0
+next_root 1 =  0
+next_root 2 =  0
+next_root 0 =  1
+next_root 1 =  1
+next_root 2 =  1
+next_root 0 =  2
+next_root 1 =  2
+next_root 2 =  2
+next_root 3 =  2
+next_root 0 =  3
+next_root 1 =  3
+next_root 2 =  3
+next_root 0 =  4
+next_root 1 =  4
+next_root 2 =  4
+next_root 0 =  5
+next_root 1 =  5
+next_root 2 =  5
+next_root 3 =  5
+next_root 0 =  6
+next_root 1 =  6
+next_root 2 =  6
+next_root 0 =  7
+next_root 1 =  7
+next_root 2 =  7
+next_root 3 =  7
+next_root 0 =  8
+next_root 1 =  8
+next_root 2 =  8
+      330,   0.0000,  2.0539e-03,   2.7790e-02,         2
+next_root 0 =  9
+next_root 1 =  9
+next_root 2 =  9
+next_root 0 =  10
+next_root 1 =  10
+next_root 2 =  10
+next_root 0 =  11
+next_root 1 =  11
+next_root 2 =  11
+next_root 0 =  12
+next_root 1 =  12
+next_root 2 =  12
+next_root 0 =  13
+next_root 1 =  13
+next_root 2 =  13
+next_root 0 =  14
+next_root 1 =  14
+next_root 2 =  14
+next_root 0 =  15
+next_root 1 =  15
+next_root 2 =  15
+next_root 0 =  16
+next_root 1 =  16
+next_root 2 =  16
+next_root 0 =  17
+next_root 1 =  17
+next_root 2 =  17
+next_root 0 =  18
+next_root 1 =  18
+next_root 2 =  18
+      340,   0.0000,  2.0544e-03,   2.7167e-02,         2
+next_root 0 =  19
+next_root 1 =  19
+next_root 2 =  19
+next_root 0 =  20
+next_root 1 =  20
+next_root 2 =  20
+next_root 0 =  21
+next_root 1 =  21
+next_root 2 =  21
+next_root 0 =  22
+next_root 1 =  22
+next_root 2 =  22
+next_root 0 =  23
+next_root 1 =  23
+next_root 2 =  23
+next_root 0 =  24
+next_root 1 =  24
+next_root 2 =  24
+next_root 0 =  25
+next_root 1 =  25
+      347,   0.0000,  2.0548e-03,   2.7386e-02,         1
+Terminating due to small change in objective.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">costs</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Dual Objective&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Iteration&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">grad_sq_norms</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Squared Norm of Gradient&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Iteration&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">step_sizes</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Step Size (after line search)&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Iteration&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">line_its</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Line Search Iterations&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Iteration&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_MNISTBarycenter_13_0.png" src="../_images/examples_MNISTBarycenter_13_0.png" />
 </div>
 </div>
 </section>
 <section id="Compute-the-Barycenter">
-<h3>Compute the Barycenter<a class="headerlink" href="#Compute-the-Barycenter" title="Permalink to this headline">#</a></h3>
+<h3>Compute the Barycenter<a class="headerlink" href="#Compute-the-Barycenter" title="Permalink to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_digits</span><span class="p">)</span><span class="o">/</span><span class="n">num_digits</span>
-<span class="n">bary</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Barycenter</span><span class="p">(</span><span class="n">dual_vars</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">bary</span> <span class="o">=</span> <span class="n">prob</span><span class="o">.</span><span class="n">Barycenter</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">dual_vars</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Plot-the-images-used-and-the-barycenter">
-<h3>Plot the images used and the barycenter<a class="headerlink" href="#Plot-the-images-used-and-the-barycenter" title="Permalink to this headline">#</a></h3>
+<h3>Plot the images used and the barycenter<a class="headerlink" href="#Plot-the-images-used-and-the-barycenter" title="Permalink to this heading">#</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">measures</span><span class="p">])</span>
@@ -723,11 +1271,20 @@ Iteration, StepSize,    Cost,   Error
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Barycenter&#39;)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/examples_MNISTBarycenter_16_0.png" src="../_images/examples_MNISTBarycenter_16_0.png" />
+<img alt="../_images/examples_MNISTBarycenter_17_1.png" src="../_images/examples_MNISTBarycenter_17_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -751,51 +1308,55 @@ Iteration, StepSize,    Cost,   Error
 </section>
 
 
-              </div>
+              </article>
               
+
               
-              <!-- Previous / next buttons -->
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="Barycenter.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Simple Barycenter Computation</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="PushForwardTest.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Push Forward Comparison</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
+  <a class='left-prev' id="prev-link" href="Barycenter.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Simple Barycenter Computation</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="PushForwardTest.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Push Forward Comparison</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
 </div>
+              </footer>
               
-          </main>
+          </div>
           
-
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, Matthew Parno and Bohan Zhou.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>

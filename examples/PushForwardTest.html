@@ -1,18 +1,22 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Push Forward Comparison &#8212; MMOT2D 0.1 documentation</title>
-    
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
 
-    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
   <link rel="stylesheet"
     href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
@@ -21,13 +25,14 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    
+
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -36,32 +41,40 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Solver API" href="../solver.html" />
     <link rel="prev" title="Barycenter of MNIST Digits" href="MNISTBarycenter.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
 
     
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
 
   <div id="navbar-start">
     
     
-<a class="navbar-brand" href="../index.html">
-<p class="title">MMOT2D</p>
-</a>
+  
 
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">MMOT2D 0.1 documentation</p>
+  
+</a>
     
   </div>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <span class="fas fa-bars"></span>
   </button>
 
   
@@ -121,6 +134,14 @@
     <div id="navbar-end">
       
       <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
       </ul>
       </div>
@@ -131,13 +152,13 @@
     </nav>
     
 
-    <div class="container-xl">
-      <div class="row">
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -145,19 +166,20 @@
     
   </div>
 </nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
-            </div>
-            
-          
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
 
           
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
-            
-              
-              <div class="toc-item">
-                
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
 <div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
@@ -192,23 +214,21 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
 
           
           
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+          <div class="bd-content col-12 col-md-9 col-xl-7">
               
-              <div>
+              <article class="bd-article" role="main">
                 
   
 <style>
@@ -425,6 +445,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -433,10 +454,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -448,18 +473,21 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <section id="Push-Forward-Comparison">
-<h1>Push Forward Comparison<a class="headerlink" href="#Push-Forward-Comparison" title="Permalink to this headline">#</a></h1>
+<h1>Push Forward Comparison<a class="headerlink" href="#Push-Forward-Comparison" title="Permalink to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -471,11 +499,12 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">AxesGrid</span>
-</pre></div>
+<span class="kn">from</span> <span class="nn">scipy.fftpack</span> <span class="kn">import</span> <span class="n">dctn</span><span class="p">,</span> <span class="n">idctn</span>
+<br/></pre></div>
 </div>
 </div>
 <section id="Define-the-dual-variable">
-<h2>Define the dual variable<a class="headerlink" href="#Define-the-dual-variable" title="Permalink to this headline">#</a></h2>
+<h2>Define the dual variable<a class="headerlink" href="#Define-the-dual-variable" title="Permalink to this heading">#</a></h2>
 <p>The map <span class="math notranslate nohighlight">\(T(x)\)</span> is defined through a dual variable <span class="math notranslate nohighlight">\(f(x)\)</span> using the expression</p>
 <div class="math notranslate nohighlight">
 \[T(x) = x - \nabla f(x).\]</div>
@@ -510,7 +539,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Define-the-source-measure">
-<h2>Define the source measure<a class="headerlink" href="#Define-the-source-measure" title="Permalink to this headline">#</a></h2>
+<h2>Define the source measure<a class="headerlink" href="#Define-the-source-measure" title="Permalink to this heading">#</a></h2>
 <p>The source density in this example is uniform over a circular region centered at <span class="math notranslate nohighlight">\(c=(0.5,0.5)\)</span>. In particular, the density is given by</p>
 <div class="math notranslate nohighlight">
 \[p(x) = \frac{1}{\pi r^2}I\left[\left(x_1-c_1\right)^2 + \left(x_2-c_2\right)^2 &lt;= r^2\right],\]</div>
@@ -539,30 +568,37 @@ div.rendered_html tbody tr:hover {
 </div>
 </section>
 <section id="Compute-the-push-forward-measure-with-our-approach">
-<h2>Compute the push forward measure with our approach<a class="headerlink" href="#Compute-the-push-forward-measure-with-our-approach" title="Permalink to this headline">#</a></h2>
+<h2>Compute the push forward measure with our approach<a class="headerlink" href="#Compute-the-push-forward-measure-with-our-approach" title="Permalink to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tgt_dens</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward2</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span><span class="n">X2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noise</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">tgt_dens2</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward2</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span><span class="n">X2</span><span class="p">)</span>
+<span class="n">tgt_dens2_noisy</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward2</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="n">noise</span><span class="p">,</span><span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span><span class="n">X2</span><span class="p">)</span>
+
+<span class="n">tgt_dens3</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward3</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">src_dens</span><span class="p">,</span><span class="n">X1</span><span class="p">,</span><span class="n">X2</span><span class="p">)</span>
+<span class="n">tgt_dens3_noisy</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward3</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="n">noise</span><span class="p">,</span> <span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Use-the-push-forward-function-from-the-original-BFM-code">
-<h2>Use the push forward function from the original BFM code<a class="headerlink" href="#Use-the-push-forward-function-from-the-original-BFM-code" title="Permalink to this headline">#</a></h2>
+<h2>Use the push forward function from the original BFM code<a class="headerlink" href="#Use-the-push-forward-function-from-the-original-BFM-code" title="Permalink to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="o">=</span> <span class="n">BFM</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">src_dens</span><span class="p">)</span>
-<span class="n">tgt_dens2</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward</span><span class="p">(</span><span class="n">bf</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">)</span>
+<span class="n">tgt_dens</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward</span><span class="p">(</span><span class="n">bf</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">)</span>
+<span class="n">tgt_dens_noisy</span> <span class="o">=</span> <span class="n">mmot</span><span class="o">.</span><span class="n">push_forward</span><span class="p">(</span><span class="n">bf</span><span class="p">,</span> <span class="n">f</span><span class="o">+</span><span class="n">noise</span><span class="p">,</span> <span class="n">src_dens</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Plot-the-pushforward-measures">
-<h2>Plot the pushforward measures<a class="headerlink" href="#Plot-the-pushforward-measures" title="Permalink to this headline">#</a></h2>
+<h2>Plot the pushforward measures<a class="headerlink" href="#Plot-the-pushforward-measures" title="Permalink to this heading">#</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -570,22 +606,47 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">slice_ind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.4</span><span class="o">*</span><span class="n">n1</span><span class="p">)</span>
 <span class="n">plot_y</span> <span class="o">=</span> <span class="n">x2</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">]</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span><span class="n">ncols</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Interpolated Push Forward&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;BFM Push Forward&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Exact Dual Variable&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens2</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;BFM Push Forward&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens_noisy</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Noisy Dual Variable&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens2</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;BFM&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Interpolated&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Slice of Push Forward&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_ratio</span><span class="p">())</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens2</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Density-Based Interpolation&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens2_noisy</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens3</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Measure-Based Interpolation&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens3_noisy</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;BFM&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens2</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Density Interpolated&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens3</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Measure Interpolated&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Slice of Push Forward&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_ratio</span><span class="p">())</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens_noisy</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;BFM&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens2_noisy</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Density Interpolated&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens3_noisy</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Measure Interpolated&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_ratio</span><span class="p">())</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=-</span><span class="mf">0.55</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;PushForwardComparison.pdf&#39;</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -595,6 +656,73 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <img alt="../_images/examples_PushForwardTest_11_0.png" src="../_images/examples_PushForwardTest_11_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">FilterSignal</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">dctn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">)</span>
+    <span class="n">coeffs</span><span class="p">[</span><span class="mi">40</span><span class="p">:,:]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">coeffs</span><span class="p">[:,</span><span class="mi">40</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">n1</span><span class="p">,</span><span class="kc">False</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">kernel</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">n1</span><span class="o">*</span><span class="n">n1</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xx</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">n2</span><span class="o">*</span><span class="n">n2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">yy</span><span class="p">))</span>
+    <span class="n">kernel</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># to avoid dividing by zero</span>
+
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">dctn</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">kernel</span>
+    <span class="n">workspace</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">idctn</span><span class="p">(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;ortho&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">workspace</span>
+
+<span class="n">new_dens</span> <span class="o">=</span> <span class="n">FilterSignal</span><span class="p">(</span><span class="n">tgt_dens</span><span class="p">)</span>
+<span class="n">new_dens2</span> <span class="o">=</span> <span class="n">FilterSignal</span><span class="p">(</span><span class="n">tgt_dens2</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;BFM Push Forward $T_\sharp\mu$&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">new_dens</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">nabla^{-2} T_\sharp\mu$&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;BFM&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">new_dens2</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;100 x Smoothed&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Slice of Push Forward&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_ratio</span><span class="p">())</span>
+
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">tgt_dens2</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Interpolated $T_\sharp\mu$&#39;</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">new_dens2</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Interpolated $</span><span class="se">\\</span><span class="s1">nabla^{-2} T_\sharp\mu$&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="n">plot_y</span><span class="p">,</span><span class="n">plot_y</span><span class="p">],</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">tgt_dens2</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Interpolated Push Forward&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">new_dens2</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;100 x Smooth Interpolated&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">new_dens</span><span class="p">[</span><span class="n">slice_ind</span><span class="p">,:],</span><span class="s1">&#39;--r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;100 x Smooth BFM&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Slice of Push Forward&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_data_ratio</span><span class="p">())</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;SmoothPushforward.pdf&#39;</span><span class="p">,</span><span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_PushForwardTest_12_0.png" src="../_images/examples_PushForwardTest_12_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -609,51 +737,55 @@ div.rendered_html tbody tr:hover {
 </section>
 
 
-              </div>
+              </article>
               
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="MNISTBarycenter.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Barycenter of MNIST Digits</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="../solver.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Solver API</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-              
-          </main>
-          
 
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="MNISTBarycenter.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Barycenter of MNIST Digits</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="../solver.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Solver API</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
       </div>
     </div>
+
+  
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
     &copy; Copyright 2022, Matthew Parno and Bohan Zhou.<br>
 </p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+  </div>
+  
+</div>
 </footer>
   </body>
 </html>
