@@ -292,83 +292,83 @@ def push_forward2(dualVar, src_dens, X1, X2, weight=1.0):
 #             The are aof the polygon.
 #     """
 
-# def push_forward3(dualVar, src_dens, X1, X2, weight=1.0):
+def push_forward3(dualVar, src_dens, X1, X2, weight=1.0):
 
-#     ny,nx = dualVar.shape 
-#     dy = 1.0/ny 
-#     dx = 1.0/nx 
+    ny,nx = dualVar.shape 
+    dy = 1.0/ny 
+    dx = 1.0/nx 
 
-#     gradx, grady = gradient(dualVar/weight)
+    gradx, grady = gradient(dualVar/weight)
 
-#     newx = X1 - gradx 
-#     newy = X2 - grady
+    newx = X1 - gradx 
+    newy = X2 - grady
 
-#     output = np.zeros(src_dens.shape)
+    output = np.zeros(src_dens.shape)
 
-#     for i in range(ny):
-#         for j in range(nx):
+    for i in range(ny):
+        for j in range(nx):
             
-#             if(src_dens[i,j]>1e-15):
-#                 # Bilinear interpolation to get position of corners 
-#                 # bottom left corner
-#                 if((j==0)|(i==0)):
-#                     x_bl = j*dx
-#                     y_bl = i*dy
-#                 else:
-#                     x_bl = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j-1] + newx[i-1,j-1])
-#                     y_bl = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j-1] + newy[i-1,j-1])
+            if(src_dens[i,j]>1e-15):
+                # Bilinear interpolation to get position of corners 
+                # bottom left corner
+                if((j==0)|(i==0)):
+                    x_bl = j*dx
+                    y_bl = i*dy
+                else:
+                    x_bl = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j-1] + newx[i-1,j-1])
+                    y_bl = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j-1] + newy[i-1,j-1])
 
-#                 # bottom right corner 
-#                 if((j==nx-1)|(i==0)):   
-#                     x_br = (j+1)*dx 
-#                     y_br = i*dy 
-#                 else:
-#                     x_br = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j+1] + newx[i-1,j+1])
-#                     y_br = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j+1] + newy[i-1,j+1])
+                # bottom right corner 
+                if((j==nx-1)|(i==0)):   
+                    x_br = (j+1)*dx 
+                    y_br = i*dy 
+                else:
+                    x_br = 0.25*(newx[i,j] + newx[i-1,j] + newx[i,j+1] + newx[i-1,j+1])
+                    y_br = 0.25*(newy[i,j] + newy[i-1,j] + newy[i,j+1] + newy[i-1,j+1])
 
-#                 # upper right corner
-#                 if((j==nx-1) | (i==ny-1)):
-#                     x_ur = (j+1)*dx 
-#                     y_ur = (i+1)*dy
-#                 else:
-#                     x_ur = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j+1] + newx[i+1,j+1])
-#                     y_ur = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j+1] + newy[i+1,j+1])
+                # upper right corner
+                if((j==nx-1) | (i==ny-1)):
+                    x_ur = (j+1)*dx 
+                    y_ur = (i+1)*dy
+                else:
+                    x_ur = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j+1] + newx[i+1,j+1])
+                    y_ur = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j+1] + newy[i+1,j+1])
                 
-#                 # upper left corner 
-#                 if((j==0)|(i==ny-1)):
-#                     x_ul = j*dx 
-#                     y_ul = (i+1)*dy
-#                 else:
-#                     x_ul = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j-1] + newx[i+1,j-1])
-#                     y_ul = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j-1] + newy[i+1,j-1])
+                # upper left corner 
+                if((j==0)|(i==ny-1)):
+                    x_ul = j*dx 
+                    y_ul = (i+1)*dy
+                else:
+                    x_ul = 0.25*(newx[i,j] + newx[i+1,j] + newx[i,j-1] + newx[i+1,j-1])
+                    y_ul = 0.25*(newy[i,j] + newy[i+1,j] + newy[i,j-1] + newy[i+1,j-1])
                     
-#                 # Grid cells in the original uniform discretization that could part of the mapped grid cell 
-#                 corner_is = [ int(np.floor(y_bl/dy)), int(np.floor(y_br/dy)), int(np.floor(y_ur/dy)), int(np.floor(y_ul/dy))]
-#                 imin = np.min(corner_is)
-#                 imax = np.max(corner_is)
+                # Grid cells in the original uniform discretization that could part of the mapped grid cell 
+                corner_is = [ int(np.floor(y_bl/dy)), int(np.floor(y_br/dy)), int(np.floor(y_ur/dy)), int(np.floor(y_ul/dy))]
+                imin = np.min(corner_is)
+                imax = np.max(corner_is)
                 
-#                 corner_js = [ int(np.floor(x_bl/dx)), int(np.floor(x_br/dx)), int(np.floor(x_ur/dx)), int(np.floor(x_ul/dx))]
-#                 jmin = np.min(corner_js)
-#                 jmax = np.max(corner_js)
+                corner_js = [ int(np.floor(x_bl/dx)), int(np.floor(x_br/dx)), int(np.floor(x_ur/dx)), int(np.floor(x_ul/dx))]
+                jmin = np.min(corner_js)
+                jmax = np.max(corner_js)
                 
-#                 tri1 = Polygon([(x_bl, y_bl), (x_ur, y_ur), (x_ul, y_ul)])
-#                 tri1_area = tri1.area 
+                tri1 = Polygon([(x_bl, y_bl), (x_ur, y_ur), (x_ul, y_ul)])
+                tri1_area = tri1.area 
 
-#                 tri2 = Polygon([(x_bl, y_bl), (x_br, y_br), (x_ur, y_ur)])
-#                 tri2_area = tri2.area 
+                tri2 = Polygon([(x_bl, y_bl), (x_br, y_br), (x_ur, y_ur)])
+                tri2_area = tri2.area 
 
-#                 for inew in range(imin,imax+1):
-#                     for jnew in range(jmin,jmax+1):
-#                         iadd = np.max([np.min([inew,ny-1]), 0])
-#                         jadd = np.max([np.min([jnew,nx-1]), 0])
+                for inew in range(imin,imax+1):
+                    for jnew in range(jmin,jmax+1):
+                        iadd = np.max([np.min([inew,ny-1]), 0])
+                        jadd = np.max([np.min([jnew,nx-1]), 0])
                         
-#                         cell = box(jnew*dx, inew*dy, (jnew+1)*dx, (inew+1)*dy)
-#                         if((tri1_area>1e-10)&(tri2_area>1e-10)):
-#                             output[iadd,jadd] += 0.5*src_dens[i,j]*tri1.intersection(cell).area / tri1_area
-#                             output[iadd,jadd] += 0.5*src_dens[i,j]*tri2.intersection(cell).area / tri2_area  
+                        cell = box(jnew*dx, inew*dy, (jnew+1)*dx, (inew+1)*dy)
+                        if((tri1_area>1e-10)&(tri2_area>1e-10)):
+                            output[iadd,jadd] += 0.5*src_dens[i,j]*tri1.intersection(cell).area / tri1_area
+                            output[iadd,jadd] += 0.5*src_dens[i,j]*tri2.intersection(cell).area / tri2_area  
 
-#     output *= np.prod(output.shape) / np.sum(output)
-#     return output
+    output *= np.prod(output.shape) / np.sum(output)
+    return output
     
 
 
@@ -401,11 +401,11 @@ def push_forward(bf, dualVar, marginal, x, y, weight=1.0):
   """
   # Convert to convex form, which is what the bf module expects
   phi = convex_conversion(dualVar/weight, x,y)
- 
+
   # Push forward
   output = np.zeros(marginal.shape)  
   bf.pushforward(output, phi, marginal)
-
+  
   return output
 
 def update_potential(f, rho, nu, kernel, sigma):
@@ -414,7 +414,7 @@ def update_potential(f, rho, nu, kernel, sigma):
           f ← f + σ Δ⁻¹(ρ − ν) = f - σ Δ⁻¹(ν - ρ)
       and return the error 
           ∫(−Δ)⁻¹(ρ−ν) (ρ−ν)
-      Modifies phi and rho
+      Modifies f and rho
     """
     
     n1, n2 = nu.shape
@@ -427,11 +427,6 @@ def update_potential(f, rho, nu, kernel, sigma):
     f += sigma * workspace
     h1 = np.sum(workspace * rho) / (n1*n2)
 
-    # fig,axs = plt.subplots(ncols=2)
-    # axs[0].imshow(rho)
-    # axs[1].imshow(workspace)
-
-    
     return h1
     
 def ascent_direction(rho,nu,kernel):

@@ -50,8 +50,15 @@ class MMOTSolver:
   
   def __init__(self, measures, edges, x, y, unroll_node=0, weights=None):
 
-      self._measures = measures 
-      num_marginals = len(measures)
+      # BFM requires the measures to own their own memory and not be a view.
+      self._measures = [] 
+      for m in measures:
+        if(m.base is None):
+            self._measures.append(m)
+        else:
+            self._measures.append(m.copy())
+            
+      num_marginals = len(self._measures)
       
       self.f_tmp = None 
       self.save_root_node = -1
@@ -62,8 +69,8 @@ class MMOTSolver:
       # Check to make sure the edge definitions are consistent with the number of measures
       for edge in edges:
           assert(len(edge)==2)
-          assert(edge[0]<len(measures))
-          assert(edge[1]<len(measures))
+          assert(edge[0]<len(self._measures))
+          assert(edge[1]<len(self._measures))
           assert(edge[0]!=edge[1])
 
        
@@ -74,7 +81,7 @@ class MMOTSolver:
           assert(np.min(weights)>=0)
           
           # If the weights are defined for each measure
-          if(len(weights)==len(measures)):
+          if(len(weights)==len(self._measures)):
               self._bary_weights = weights 
               self._bary_weights /= np.sum(self._bary_weights)
 
@@ -94,8 +101,8 @@ class MMOTSolver:
 
       else:
  
-          for i in range(len(measures)):
-              for j in range(i+1,len(measures)):
+          for i in range(len(self._measures)):
+              for j in range(i+1,len(self._measures)):
                 self._edge_weights[i,j] = 1.0
                 self._edge_weights[j,i] = 1.0
 
@@ -106,9 +113,9 @@ class MMOTSolver:
 
       self._unrolled_tree, self._measure_map = self.CreateUndirected(self._measures, self._edges, unroll_node)
 
-      self._n1, self._n2 = measures[0].shape
+      self._n1, self._n2 = self._measures[0].shape
 
-      self._bf = BFM(self._n1, self._n2, measures[0])
+      self._bf = BFM(self._n1, self._n2, self._measures[0])
 
       self._kernel = initialize_kernel(self._n1, self._n2)
 
@@ -139,8 +146,7 @@ class MMOTSolver:
         
         ARGUMENTS:
             unrolled_dual_vars (list of np.array) : List of vectors containing the dual variables for each node in the unrolled graph.
-            weights (np.array) : Vector containing weights on each measure in the original problem.  Must sum to one.
-
+         
         RETURNS:
             np.array : A 2d numpy array containing the barycenter.
     """
@@ -307,7 +313,7 @@ class MMOTSolver:
 
         cost = 0
         for dual_ind, meas_ind in enumerate(self._measure_map):
-          cost += np.sum(dual_vars[dual_ind]*self._measures[meas_ind])/(n1*n2)
+            cost += np.sum(dual_vars[dual_ind]*self._measures[meas_ind])/(n1*n2)
         return cost
 
     
@@ -328,7 +334,7 @@ class MMOTSolver:
 
         self.f_tmp = [None]*num_verts
 
-        # Do the final c-transform to update the root note
+        # Do the final c-transform to update the root node
         for layer in self.layers[:-1]:
             for vert_ind in layer:
           
@@ -355,13 +361,19 @@ class MMOTSolver:
             # Update the dual variable at this node 
             next_vert_ind = self.tree.vs[vert_ind].out_edges()[0].target
             w = self._edge_weights[self._measure_map[vert_ind],self._measure_map[next_vert_ind]]
+            #print(w)
             smu = push_forward(self._bf, self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
+            smu = np.nan_to_num(smu,copy=False)
+            
             #smu = push_forward2(self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
             #smu = push_forward3(self.f_tmp[vert_ind], self._measures[self._measure_map[next_vert_ind]], self._x, self._y, w)
             
+            #grad, gradSqNorm = ascent_direction(smu, self._measures[self._measure_map[vert_ind]], self._kernel)
+            #grad_squared_norm += gradSqNorm
+            #dual_vars[vert_ind] += -step_size*grad 
             grad_squared_norm += update_potential(dual_vars[vert_ind], smu, self._measures[self._measure_map[vert_ind]], self._kernel, -step_size)
        
-    # Do the final c-transform to update the root note
+    # Do the final c-transform to update the root node
     for layer in self.layers[:-1]:
       for vert_ind in layer:
 
@@ -512,6 +524,7 @@ class MMOTSolver:
 
             new_cost = self.ComputeCost(new_duals)
 
+            #print('Line search {:2d}:  {:0.4e} vs {:0.4e}'.format(line_it, new_cost-old_cost, 1e-8*step_size*alpha*gradSqNorm))
             if(new_cost>=old_cost+1e-8*step_size*alpha*gradSqNorm):
                 res.costs.append(new_cost) 
                 old_cost = np.copy(new_cost)
@@ -526,30 +539,37 @@ class MMOTSolver:
                 
             line_it += 1
 
-        if((line_it>=max_line_its)&(len(root_nodes)==1)):
-            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
-            print('Terminating due to failed line search.')
-            res.conv_code = -3
-            break 
+        if(line_it>=max_line_its):
+            if(len(root_nodes)==1):
+                print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+                print('Terminating due to failed line search.', flush=True)
+                res.conv_code = -3
+                break
+            else:
+                res.costs.append(new_cost)
+                old_cost = np.copy(new_cost)
+                dual_vars = np.copy(new_duals)
+                gradSqNorm = np.copy(newSqNorm)
 
         res.grad_sq_norms.append(gradSqNorm)
         res.line_its.append(line_it)
 
         
         if((it%10)==0):
-            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it), flush=True)
 
         # Check for convergence in cost
-        if(np.abs(res.costs[-1]-res.costs[-2])<ftol_abs):
-            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
-            print('Terminating due to small change in objective.')
-            res.conv_code = 2
-            break
+        if(it>1):
+            if(np.abs(res.costs[-1]-res.costs[-2])<ftol_abs):
+                print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+                print('Terminating due to small change in objective.', flush=True)
+                res.conv_code = 2
+                break
 
         # Check for convergence via gradient 
         if(gradSqNorm<gtol_abs):
             print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
-            print('Terminating due to small gradient norm.')
+            print('Terminating due to small gradient norm.', flush=True)
             res.conv_code = 1
             break
 
