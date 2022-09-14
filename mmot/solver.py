@@ -541,7 +541,7 @@ class MMOTSolver:
 
         if(line_it>=max_line_its):
             if(len(root_nodes)==1):
-                print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+                print('{:9d},   {:0.4f},  {:0.6e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
                 print('Terminating due to failed line search.', flush=True)
                 res.conv_code = -3
                 break
@@ -556,19 +556,19 @@ class MMOTSolver:
 
         
         if((it%10)==0):
-            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it), flush=True)
+            print('{:9d},   {:0.4f},  {:0.6e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it), flush=True)
 
         # Check for convergence in cost
         if(it>1):
             if(np.abs(res.costs[-1]-res.costs[-2])<ftol_abs):
-                print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+                print('{:9d},   {:0.4f},  {:0.6e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
                 print('Terminating due to small change in objective.', flush=True)
                 res.conv_code = 2
                 break
 
         # Check for convergence via gradient 
         if(gradSqNorm<gtol_abs):
-            print('{:9d},   {:0.4f},  {:0.4e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
+            print('{:9d},   {:0.4f},  {:0.6e},   {:0.4e},  {:8d}'.format(it,alpha*step_size, res.costs[-1], gradSqNorm, line_it))
             print('Terminating due to small gradient norm.', flush=True)
             res.conv_code = 1
             break
