@@ -28,6 +28,7 @@ Then you can install mmot by cloning this repository and install the package wit
     pip install -e mmot
     
 On Colab, you can install mmot by:
+
 .. code::
     
     !git clone https://github.com:simda-muri/mmot.git
